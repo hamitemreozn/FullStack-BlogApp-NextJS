@@ -1,4 +1,4 @@
-EN
+#EN
 Astrology Blog Application: In the Trail of Stars
 This project is a specially designed blog application for astrology enthusiasts. In the Trail of Stars provides an interactive platform where astrology enthusiasts can come together and share their experiences and knowledge. Developed with React.js and Next.js, and utilizes MongoDB and Prisma Schema for data management.
 
