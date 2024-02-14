@@ -1,0 +1,140 @@
+/* contactPage.module.css */
+.mainDesc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid rgb(239, 150, 91);
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+/* Genel Stil */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+}
+
+.contactDetail,
+.contactDetail:hover {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #25d366;
+    padding: 5px;
+    border-radius: 10px;
+    color: #25d366;
+    transition: all 0.2s ease-out;
+}
+
+.contactDetail:hover {
+    background-color: #25d366;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Kart Stilleri */
+.card {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.01);
+}
+
+.cardHeader {
+    background-color: rgb(239, 150, 91);
+    color: white;
+    padding: 1rem;
+}
+
+.cardBody {
+    padding: 1rem;
+}
+
+/* Metin ve Başlık Stilleri */
+.cardTitle {
+    margin: 0;
+    text-align: center;
+    font-size: 20px;
+}
+
+.cardDetail {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 15px;
+    border-top: 1px solid orange;
+    padding-top: 5px;
+}
+
+.cardNote {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 15px;
+    border-top: 1px solid orange;
+    padding-top: 10px;
+}
+
+.cardDetailPrice {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.pricingTitle {
+    font-size: 20px;
+    text-align: center;
+    border-top: 1px solid orange;
+    padding-top: 10px;
+}
+
+.textSecondary {
+    color: #6c757d;
+}
+
+/* Liste Stilleri */
+.featureList {
+    list-style: disc;
+    padding: 0 10px;
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.featureListMain {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+
+/* Buton Stilleri */
+.btn {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btnOutlinePrimary {
+    color: #007bff;
+    border: 1px solid #007bff;
+    background-color: transparent;
+}
+
+.btnOutlinePrimary:hover {
+    color: #fff;
+    background-color: #007bff;
+}
