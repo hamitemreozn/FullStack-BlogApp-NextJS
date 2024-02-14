@@ -1,34 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+EN
+Astrology Blog Application: In the Trail of Stars
+This project is a specially designed blog application for astrology enthusiasts. In the Trail of Stars provides an interactive platform where astrology enthusiasts can come together and share their experiences and knowledge. Developed with React.js and Next.js, and utilizes MongoDB and Prisma Schema for data management.
 
-## Getting Started
+Technologies
+React.js
+Next.js
+MongoDB
+Prisma Schema
 
-First, run the development server:
+Contact
+If you have any questions or feedback, please contact us at hamit.34.11@gmail.com.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+TR
+Astroloji Blog Uygulaması: Yıldızların İzinde
+Bu proje, astroloji tutkunları için özel olarak tasarlanmış bir blog uygulamasıdır. Yıldızların İzinde, astroloji meraklılarının bir araya gelip deneyimlerini ve bilgilerini paylaşabileceği etkileşimli bir platform sunar. React.js ve Next.js ile geliştirilmiş olup, veri yönetimi için MongoDB ve Prisma Schema kullanılmıştır.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Teknolojiler
+React.js
+Next.js
+MongoDB
+Prisma Schema
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+İletişim
+Herhangi bir sorunuz veya geri bildiriminiz varsa, lütfen hamit.34.11@gmail.com adresinden bize ulaşın.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+DE
+Astrologie-Blog-Anwendung: Auf den Spuren der Sterne
+Dieses Projekt ist eine speziell entwickelte Blog-Anwendung für Astrologie-Enthusiasten. Auf den Spuren der Sterne bietet eine interaktive Plattform, auf der Astrologie-Enthusiasten zusammenkommen und ihre Erfahrungen und Kenntnisse teilen können. Entwickelt mit React.js und Next.js und nutzt MongoDB und Prisma Schema für das Datenmanagement.
 
-## Learn More
+Technologien
+React.js
+Next.js
+MongoDB
+Prisma Schema
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Kontakt
+Bei Fragen oder Feedback kontaktieren Sie uns bitte unter hamit.34.11@gmail.com.
