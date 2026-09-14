@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import { CommentForm } from "./comment-form";
 import { database } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +33,19 @@ export default async function PostPage({ params }: PostPageProps) {
     .where("posts.status", "=", "PUBLISHED")
     .executeTakeFirst();
   if (!post) notFound();
+  const comments = await database
+    .selectFrom("comments")
+    .innerJoin("posts", "posts.id", "comments.post_id")
+    .select([
+      "comments.id",
+      "comments.author_name",
+      "comments.body",
+      "comments.created_at",
+    ])
+    .where("posts.slug", "=", slug)
+    .where("comments.status", "=", "APPROVED")
+    .orderBy("comments.created_at", "asc")
+    .execute();
   return (
     <main className="page-shell">
       <article className="article">
@@ -50,6 +64,33 @@ export default async function PostPage({ params }: PostPageProps) {
           />
         ) : null}
         <div className="article-content">{extractPlainText(post.content)}</div>
+        <section
+          className="comments-section"
+          aria-labelledby="comments-heading"
+        >
+          <p className="eyebrow">Sohbet</p>
+          <h2 id="comments-heading">Yorumlar</h2>
+          {comments.length ? (
+            <div className="comment-list">
+              {comments.map((comment) => (
+                <article className="comment-item" key={comment.id}>
+                  <div>
+                    <strong>{comment.author_name}</strong>
+                    <time dateTime={comment.created_at.toISOString()}>
+                      {comment.created_at.toLocaleDateString("tr-TR")}
+                    </time>
+                  </div>
+                  <p>{comment.body}</p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="comment-empty">
+              Henüz onaylanmış yorum yok. İlk düşüncenizi paylaşabilirsiniz.
+            </p>
+          )}
+          <CommentForm slug={slug} />
+        </section>
       </article>
     </main>
   );

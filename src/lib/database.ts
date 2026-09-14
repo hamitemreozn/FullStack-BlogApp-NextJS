@@ -44,9 +44,17 @@ export interface Database {
     id: Generated<string>;
     post_id: string;
     author_id: OptionalNullableString;
+    author_name: string;
+    source_fingerprint: OptionalNullableString;
     body: string;
     status: Generated<"PENDING" | "APPROVED" | "REJECTED">;
     created_at: Generated<Date>;
+    updated_at: Generated<Date>;
+  };
+  comment_rate_limits: {
+    fingerprint: string;
+    window_started_at: Date;
+    request_count: Generated<number>;
     updated_at: Generated<Date>;
   };
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { LogoutButton } from "./logout-button";
 import { ContentForms } from "./content-forms";
+import { CommentModeration } from "./comment-moderation";
 import { auth } from "@/lib/auth";
 import { database } from "@/lib/database";
 
@@ -45,6 +46,20 @@ export default async function AdminPage() {
     .orderBy("updated_at", "desc")
     .limit(50)
     .execute();
+  const pendingComments = await database
+    .selectFrom("comments")
+    .innerJoin("posts", "posts.id", "comments.post_id")
+    .select([
+      "comments.id",
+      "comments.author_name",
+      "comments.body",
+      "comments.created_at",
+      "posts.title as post_title",
+    ])
+    .where("comments.status", "=", "PENDING")
+    .orderBy("comments.created_at", "asc")
+    .limit(50)
+    .execute();
 
   return (
     <main className="page-shell">
@@ -67,6 +82,15 @@ export default async function AdminPage() {
             coverImageKey: post.cover_image_key,
             published: post.status === "PUBLISHED",
             updatedAt: post.updated_at.toISOString(),
+          }))}
+        />
+        <CommentModeration
+          comments={pendingComments.map((comment) => ({
+            id: comment.id,
+            authorName: comment.author_name,
+            body: comment.body,
+            postTitle: comment.post_title,
+            createdAt: comment.created_at.toISOString(),
           }))}
         />
       </section>

@@ -574,6 +574,71 @@ button {
   border-radius: 18px;
   object-fit: cover;
 }
+.comments-section {
+  margin-top: 74px;
+  padding-top: 42px;
+  border-top: 1px solid var(--line);
+}
+.comments-section h2 {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 2.3rem;
+  font-weight: 500;
+}
+.comment-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 25px;
+}
+.comment-item {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+}
+.comment-item > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 15px;
+}
+.comment-item strong {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+.comment-item time,
+.moderation-item time {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.comment-item p {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+.comment-empty {
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.comment-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 30px;
+  padding: 25px;
+  border-radius: 15px;
+  background: #f2ece5;
+}
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
 .notice {
   margin: 24px 0 0;
   padding: 16px 18px;
@@ -736,6 +801,36 @@ button {
   font-size: 0.83rem;
   text-align: center;
 }
+.moderation-section {
+  margin-top: 32px;
+}
+.moderation-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 21px;
+}
+.moderation-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 17px;
+  border: 1px solid rgba(73, 55, 92, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.74);
+}
+.moderation-item p {
+  margin: 0 0 4px;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+.moderation-item blockquote {
+  margin: 13px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
 .content-editor,
 .category-form {
   margin-top: 0 !important;
@@ -885,6 +980,9 @@ button {
   }
   .post-manager-item {
     align-items: flex-start;
+    flex-direction: column;
+  }
+  .moderation-item {
     flex-direction: column;
   }
   .contact-quote {
