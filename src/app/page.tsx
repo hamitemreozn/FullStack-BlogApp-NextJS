@@ -38,20 +38,6 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-        <div className="hero-portrait-wrap">
-          <div className="hero-glow" aria-hidden="true" />
-          <Image
-            className="hero-portrait"
-            src="/mainphoto.jpeg"
-            alt="Murat İpek"
-            width={838}
-            height={816}
-            priority
-          />
-          <p className="portrait-caption">
-            Murat İpek <span>·</span> Astrolog
-          </p>
-        </div>
         <span className="hero-orbit orbit-one" aria-hidden="true" />
         <span className="hero-orbit orbit-two" aria-hidden="true" />
       </section>

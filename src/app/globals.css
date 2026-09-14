@@ -140,7 +140,7 @@ button {
   isolation: isolate;
   display: grid;
   min-height: 560px;
-  grid-template-columns: minmax(0, 1fr) minmax(330px, 0.77fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: 34px;
   overflow: hidden;
@@ -164,7 +164,7 @@ button {
 .hero-copy {
   position: relative;
   z-index: 2;
-  max-width: 650px;
+  max-width: 720px;
 }
 .eyebrow {
   margin: 0 0 17px;
@@ -243,55 +243,6 @@ button {
 }
 .text-button:hover {
   color: var(--gold-soft);
-}
-.hero-portrait-wrap {
-  position: relative;
-  z-index: 1;
-  min-height: 410px;
-  align-self: stretch;
-}
-.hero-glow {
-  position: absolute;
-  top: 7%;
-  right: -1%;
-  width: min(100%, 430px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(243, 195, 101, 0.72) 0%,
-    rgba(197, 122, 75, 0.36) 29%,
-    rgba(44, 32, 64, 0) 70%
-  );
-  filter: blur(1px);
-}
-.hero-portrait {
-  position: absolute;
-  right: 8%;
-  bottom: 0;
-  width: min(100%, 320px);
-  height: 455px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 170px 170px 24px 24px;
-  object-fit: cover;
-  object-position: center 32%;
-  filter: contrast(1.04) saturate(0.87);
-  box-shadow: 0 26px 40px rgba(8, 4, 14, 0.35);
-}
-.portrait-caption {
-  position: absolute;
-  right: 4%;
-  bottom: 19px;
-  margin: 0;
-  color: #f7f2fb;
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.portrait-caption span {
-  margin-inline: 6px;
-  color: var(--gold);
 }
 .hero-orbit {
   position: absolute;
@@ -746,27 +697,6 @@ button {
   }
   .hero h1 {
     font-size: clamp(3rem, 10.5vw, 4.7rem);
-  }
-  .hero-portrait-wrap {
-    min-height: 370px;
-    margin-top: -15px;
-  }
-  .hero-portrait {
-    right: 50%;
-    bottom: 0;
-    width: min(100%, 290px);
-    height: 390px;
-    transform: translateX(50%);
-  }
-  .hero-glow {
-    right: 50%;
-    transform: translateX(50%);
-  }
-  .portrait-caption {
-    right: 50%;
-    bottom: 16px;
-    transform: translateX(50%);
-    white-space: nowrap;
   }
   .orbit-one {
     right: 50%;
