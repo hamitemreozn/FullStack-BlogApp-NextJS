@@ -1,38 +1,48 @@
-EN
-Astrology Blog Application: In the Trail of Stars
-This project is a specially designed blog application for astrology enthusiasts. In the Trail of Stars provides an interactive platform where astrology enthusiasts can come together and share their experiences and knowledge. Developed with React.js and Next.js, and utilizes MongoDB and Prisma Schema for data management.
+# Astrology Blog App
 
-Technologies
-React.js
-Next.js
-MongoDB
-Prisma Schema
+`Astrology Blog App`, eski Next.js/MongoDB/Firebase projesinin yerelde, üretime taşınabilir biçimde yeniden kurulmuş sürümüdür. Eski kaynak kodu silinmeden `legacy-source/` altında referans olarak tutulur; çalışan uygulama yalnızca `src/` içindedir.
 
-Contact
-If you have any questions or feedback, please contact us at hamit.34.11@gmail.com.
+## Teknoloji seçimi
 
-TR
-Astroloji Blog Uygulaması: Yıldızların İzinde
-Bu proje, astroloji tutkunları için özel olarak tasarlanmış bir blog uygulamasıdır. Yıldızların İzinde, astroloji meraklılarının bir araya gelip deneyimlerini ve bilgilerini paylaşabileceği etkileşimli bir platform sunar. React.js ve Next.js ile geliştirilmiş olup, veri yönetimi için MongoDB ve Prisma Schema kullanılmıştır.
+- Next.js 16, React 19 ve TypeScript
+- PostgreSQL 17 ve Kysely
+- Better Auth: yerel e-posta/parola oturumu ve admin rolü
+- MinIO: yerelde S3 uyumlu özel medya deposu
+- Cloudflare R2: üretimde aynı S3 arayüzünün hedefi olacak
 
-Teknolojiler
-React.js
-Next.js
-MongoDB
-Prisma Schema
+Eski Firebase, MongoDB, Prisma, NextAuth ve GitHub OAuth entegrasyonları çalışır kodda bulunmaz. Google ile giriş, yeni ve geliştiriciye ait OAuth bilgileriyle ileride isteğe bağlı eklenebilir.
 
-İletişim
-Herhangi bir sorunuz veya geri bildiriminiz varsa, lütfen hamit.34.11@gmail.com adresinden bize ulaşın.
+## Yerel kurulum
 
-DE
-Astrologie-Blog-Anwendung: Auf den Spuren der Sterne
-Dieses Projekt ist eine speziell entwickelte Blog-Anwendung für Astrologie-Enthusiasten. Auf den Spuren der Sterne bietet eine interaktive Plattform, auf der Astrologie-Enthusiasten zusammenkommen und ihre Erfahrungen und Kenntnisse teilen können. Entwickelt mit React.js und Next.js und nutzt MongoDB und Prisma Schema für das Datenmanagement.
+Ön koşullar: Node.js 20.9+ ve Docker Desktop.
 
-Technologien
-React.js
-Next.js
-MongoDB
-Prisma Schema
+```powershell
+Copy-Item .env.example .env
+docker compose up -d
+npm install
+npm run db:migrate:content
+npm run storage:setup
+npm run dev
+```
 
-Kontakt
-Bei Fragen oder Feedback kontaktieren Sie uns bitte unter hamit.34.11@gmail.com.
+Uygulama `http://localhost:3000`, yönetim girişi `http://localhost:3000/admin/login`, MinIO konsolu `http://localhost:9003` adresindedir. Bu proje Docker’da kendine özgü adlar, portlar (`5433`, `9002`, `9003`) ve volume’lar kullanır; başka bir projenin MinIO’suna dokunmaz.
+
+İlk yerel yönetici, Better Auth komutuyla oluşturulur:
+
+```powershell
+npx auth@latest create-admin --config src/lib/auth.ts --email admin@astrology.local --name "Local Administrator" --role admin --password "choose-a-unique-local-password" --yes
+```
+
+Bu parola yalnızca yerel geliştirme içindir; gerçek bir proje parolasını repoya veya `.env.example` dosyasına yazma.
+
+## Kalite komutları
+
+```powershell
+npm run format
+npm run typecheck
+npm run lint
+npm run build
+npm audit --omit=dev
+```
+
+Yerel servisler ve ilerideki R2 geçişi için [local services notlarına](docs/local-services.md), yeniden yapım sırası için [plana](docs/rebuild-plan.md) bak.

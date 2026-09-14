@@ -27,6 +27,8 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+# Local Compose override files and generated service data must remain private.
+.env.compose
 # vercel
 .vercel
 
