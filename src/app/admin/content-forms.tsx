@@ -6,6 +6,17 @@ import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/content";
 
 type Category = { id: string; slug: string; title: string };
+type ManagedPost = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  body: string;
+  categoryId: string | null;
+  coverImageKey: string | null;
+  published: boolean;
+  updatedAt: string;
+};
 type UploadForm = { url: string; fields: Record<string, string>; key: string };
 
 const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -41,10 +52,17 @@ async function uploadCoverImage(file: File) {
   return upload.key;
 }
 
-export function ContentForms({ categories }: { categories: Category[] }) {
+export function ContentForms({
+  categories,
+  posts,
+}: {
+  categories: Category[];
+  posts: ManagedPost[];
+}) {
   const router = useRouter();
   const [message, setMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [editingPost, setEditingPost] = useState<ManagedPost | null>(null);
 
   async function createCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -72,7 +90,7 @@ export function ContentForms({ categories }: { categories: Category[] }) {
     }
   }
 
-  async function createPost(event: FormEvent<HTMLFormElement>) {
+  async function savePost(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const title = String(form.get("title") ?? "");
@@ -84,23 +102,26 @@ export function ContentForms({ categories }: { categories: Category[] }) {
       const coverImageKey =
         coverImage instanceof File && coverImage.size > 0
           ? await uploadCoverImage(coverImage)
-          : null;
-      const response = await fetch("/api/admin/posts", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          title,
-          slug: slugify(title),
-          excerpt: String(form.get("excerpt") ?? ""),
-          body: String(form.get("body") ?? ""),
-          categoryId: String(form.get("categoryId") ?? "") || null,
-          coverImageKey,
-          publish: form.get("publish") === "on",
-        }),
-      });
+          : (editingPost?.coverImageKey ?? null);
+      const response = await fetch(
+        editingPost ? `/api/admin/posts/${editingPost.id}` : "/api/admin/posts",
+        {
+          method: editingPost ? "PATCH" : "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            title,
+            slug: slugify(title),
+            excerpt: String(form.get("excerpt") ?? ""),
+            body: String(form.get("body") ?? ""),
+            categoryId: String(form.get("categoryId") ?? "") || null,
+            coverImageKey,
+            publish: form.get("publish") === "on",
+          }),
+        },
+      );
       if (!response.ok) throw new Error("Yazı kaydedilemedi.");
-      event.currentTarget.reset();
-      setMessage("Yazı kaydedildi.");
+      setEditingPost(null);
+      setMessage(editingPost ? "Yazı güncellendi." : "Yazı kaydedildi.");
       router.refresh();
     } catch (error) {
       setMessage(
@@ -111,31 +132,130 @@ export function ContentForms({ categories }: { categories: Category[] }) {
     }
   }
 
+  async function deletePost(post: ManagedPost) {
+    if (!window.confirm(`“${post.title}” yazısı kalıcı olarak silinsin mi?`))
+      return;
+    setIsSaving(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch(`/api/admin/posts/${post.id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Yazı silinemedi.");
+      if (editingPost?.id === post.id) setEditingPost(null);
+      setMessage("Yazı silindi.");
+      router.refresh();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Yazı silinemedi.");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   return (
-    <div className="form-stack">
-      <form className="form-stack" onSubmit={createCategory}>
-        <h2>Kategori ekle</h2>
+    <div className="content-manager">
+      <section className="content-manager-section">
+        <div className="manager-heading">
+          <div>
+            <p className="eyebrow">İçerik</p>
+            <h2>Yazılar</h2>
+          </div>
+          <button
+            className="secondary-button"
+            type="button"
+            onClick={() => setEditingPost(null)}
+          >
+            Yeni yazı
+          </button>
+        </div>
+        <div className="post-manager-list">
+          {posts.length ? (
+            posts.map((post) => (
+              <article className="post-manager-item" key={post.id}>
+                <div>
+                  <span
+                    className={`status-badge ${post.published ? "is-published" : "is-draft"}`}
+                  >
+                    {post.published ? "Yayında" : "Taslak"}
+                  </span>
+                  <h3>{post.title}</h3>
+                  <p>
+                    Son değişiklik:{" "}
+                    {new Date(post.updatedAt).toLocaleDateString("tr-TR")}
+                  </p>
+                </div>
+                <div className="item-actions">
+                  <button
+                    className="text-action"
+                    type="button"
+                    onClick={() => setEditingPost(post)}
+                  >
+                    Düzenle
+                  </button>
+                  <button
+                    className="danger-action"
+                    type="button"
+                    disabled={isSaving}
+                    onClick={() => deletePost(post)}
+                  >
+                    Sil
+                  </button>
+                </div>
+              </article>
+            ))
+          ) : (
+            <p className="manager-empty">
+              Henüz bir yazı yok. İlk yazınızı aşağıdaki formdan oluşturun.
+            </p>
+          )}
+        </div>
+      </section>
+      <form
+        className="form-stack content-editor"
+        key={editingPost?.id ?? "new"}
+        onSubmit={savePost}
+      >
+        <div className="manager-heading">
+          <div>
+            <p className="eyebrow">
+              {editingPost ? "Düzenleme" : "Yeni içerik"}
+            </p>
+            <h2>{editingPost ? editingPost.title : "Yeni yazı"}</h2>
+          </div>
+          {editingPost ? (
+            <button
+              className="text-action"
+              type="button"
+              onClick={() => setEditingPost(null)}
+            >
+              İptal
+            </button>
+          ) : null}
+        </div>
         <label className="field">
           Başlık
-          <input name="title" required maxLength={100} />
-        </label>
-        <button className="primary-button" disabled={isSaving}>
-          Kategori kaydet
-        </button>
-      </form>
-      <form className="form-stack" onSubmit={createPost}>
-        <h2>Yeni yazı</h2>
-        <label className="field">
-          Başlık
-          <input name="title" required maxLength={200} />
+          <input
+            name="title"
+            required
+            maxLength={200}
+            defaultValue={editingPost?.title}
+          />
         </label>
         <label className="field">
           Özet
-          <input name="excerpt" maxLength={500} />
+          <input
+            name="excerpt"
+            maxLength={500}
+            defaultValue={editingPost?.excerpt}
+          />
         </label>
         <label className="field">
           Kategori
-          <select name="categoryId" defaultValue="">
+          <select
+            name="categoryId"
+            defaultValue={editingPost?.categoryId ?? ""}
+          >
             <option value="">Kategorisiz</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
@@ -151,16 +271,51 @@ export function ContentForms({ categories }: { categories: Category[] }) {
             type="file"
             accept="image/jpeg,image/png,image/webp"
           />
+          {editingPost?.coverImageKey ? (
+            <span className="field-hint">
+              Yeni görsel seçilmezse mevcut kapak korunur.
+            </span>
+          ) : null}
         </label>
         <label className="field">
           İçerik
-          <textarea name="body" rows={10} required maxLength={20_000} />
+          <textarea
+            name="body"
+            rows={12}
+            required
+            maxLength={20_000}
+            defaultValue={editingPost?.body}
+          />
         </label>
-        <label>
-          <input name="publish" type="checkbox" /> Hemen yayımla
+        <label className="checkbox-field">
+          <input
+            name="publish"
+            type="checkbox"
+            defaultChecked={editingPost?.published}
+          />{" "}
+          Hemen yayımla
         </label>
         <button className="primary-button" disabled={isSaving}>
-          {isSaving ? "Kaydediliyor…" : "Yazıyı kaydet"}
+          {isSaving
+            ? "Kaydediliyor…"
+            : editingPost
+              ? "Değişiklikleri kaydet"
+              : "Yazıyı kaydet"}
+        </button>
+      </form>
+      <form className="form-stack category-form" onSubmit={createCategory}>
+        <div className="manager-heading">
+          <div>
+            <p className="eyebrow">Yapı</p>
+            <h2>Kategori ekle</h2>
+          </div>
+        </div>
+        <label className="field">
+          Başlık
+          <input name="title" required maxLength={100} />
+        </label>
+        <button className="secondary-button" disabled={isSaving}>
+          Kategori kaydet
         </button>
       </form>
       {message ? (
