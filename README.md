@@ -39,10 +39,16 @@ Bu parola yalnızca yerel geliştirme içindir; gerçek bir proje parolasını r
 
 ```powershell
 npm run format
+npm run test
 npm run typecheck
 npm run lint
 npm run build
-npm audit --omit=dev
+npm run audit:prod
 ```
+
+`npm run test`, içerik editörünün yalnızca izinli JSON düğümlerini kabul ettiğini
+ve düz metne güvenli biçimde indirgediğini kontrol eder. Aynı kalite zinciri,
+GitHub'a gönderilecek her `main` dalı güncellemesinde ve pull request'te
+`.github/workflows/ci.yml` üzerinden çalışır.
 
 Yerel servisler ve ilerideki R2 geçişi için [local services notlarına](docs/local-services.md), yeniden yapım sırası için [plana](docs/rebuild-plan.md) bak.

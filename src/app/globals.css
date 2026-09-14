@@ -567,6 +567,35 @@ button {
   line-height: 1.9;
   white-space: pre-wrap;
 }
+.rich-text-content > :first-child {
+  margin-top: 0;
+}
+.rich-text-content > :last-child {
+  margin-bottom: 0;
+}
+.rich-text-content p {
+  margin: 1.15em 0;
+}
+.rich-text-content ul,
+.rich-text-content ol {
+  padding-left: 1.35em;
+}
+.rich-text-content li {
+  margin: 0.45em 0;
+}
+.rich-text-content h2 {
+  font-size: 1.7em;
+}
+.rich-text-content h3 {
+  font-size: 1.35em;
+}
+.rich-text-content blockquote {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 2px solid var(--gold);
+  color: var(--plum);
+  font-style: italic;
+}
 .article-cover {
   width: 100%;
   height: auto;
@@ -881,6 +910,84 @@ button {
 .field textarea {
   min-height: 160px;
   resize: vertical;
+}
+.rich-text-editor {
+  overflow: hidden;
+  border: 1px solid rgba(73, 55, 92, 0.2);
+  border-radius: 10px;
+  background: #fff;
+}
+.rich-text-loading {
+  padding: 15px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 9px;
+  border-bottom: 1px solid rgba(73, 55, 92, 0.14);
+  background: #f6f1ea;
+}
+.editor-toolbar button {
+  min-height: 30px;
+  border: 1px solid rgba(73, 55, 92, 0.2);
+  border-radius: 6px;
+  padding: 0 8px;
+  color: var(--ink-soft);
+  background: #fffdf9;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+.editor-toolbar button:hover {
+  border-color: var(--plum);
+  background: #eee7f4;
+}
+.rich-text-input {
+  min-height: 270px;
+  outline: none;
+  padding: 16px;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 1.03rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+.rich-text-input > :first-child {
+  margin-top: 0;
+}
+.rich-text-input > :last-child {
+  margin-bottom: 0;
+}
+.rich-text-input h2 {
+  margin: 1.45em 0 0.5em;
+  font-family: var(--serif);
+  font-size: 1.7em;
+  font-weight: 500;
+  line-height: 1.1;
+}
+.rich-text-input h3 {
+  margin: 1.3em 0 0.45em;
+  font-family: var(--serif);
+  font-size: 1.35em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.rich-text-input p {
+  margin: 0.8em 0;
+}
+.rich-text-input ul,
+.rich-text-input ol {
+  margin: 0.8em 0;
+  padding-left: 1.4em;
+}
+.rich-text-input blockquote {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 2px solid var(--gold);
+  color: var(--plum);
+  font-style: italic;
 }
 .field input:focus,
 .field textarea:focus,

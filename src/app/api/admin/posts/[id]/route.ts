@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { hasTrustedOrigin, requireAdmin } from "@/lib/admin-api";
-import { createDocument, postInputSchema } from "@/lib/content";
+import { isMeaningfulRichTextDocument, postInputSchema } from "@/lib/content";
 import { database } from "@/lib/database";
 
 const postIdSchema = z.string().uuid();
@@ -56,7 +56,14 @@ export async function PATCH(request: Request, context: PostRouteContext) {
     );
   }
 
-  const { body, categoryId, coverImageKey, publish, ...post } = parsed.data;
+  const { content, categoryId, coverImageKey, publish, ...post } = parsed.data;
+  const document = isMeaningfulRichTextDocument(content);
+  if (!document) {
+    return Response.json(
+      { message: "Yazı içeriği geçersiz." },
+      { status: 400 },
+    );
+  }
   try {
     const updated = await database
       .updateTable("posts")
@@ -64,7 +71,7 @@ export async function PATCH(request: Request, context: PostRouteContext) {
         ...post,
         category_id: categoryId,
         cover_image_key: coverImageKey,
-        content: createDocument(body),
+        content: document,
         status: publish ? "PUBLISHED" : "DRAFT",
         published_at: publish ? new Date() : null,
         updated_at: new Date(),

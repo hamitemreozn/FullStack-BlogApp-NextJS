@@ -2,19 +2,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { CommentForm } from "./comment-form";
+import { RichText } from "@/components/rich-text";
 import { database } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
 type PostPageProps = { params: Promise<{ slug: string }> };
-
-function extractPlainText(value: unknown): string {
-  if (typeof value === "string") return value;
-  if (Array.isArray(value)) return value.map(extractPlainText).join(" ");
-  if (value && typeof value === "object")
-    return Object.values(value).map(extractPlainText).join(" ");
-  return "";
-}
 
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
@@ -63,7 +56,9 @@ export default async function PostPage({ params }: PostPageProps) {
             priority
           />
         ) : null}
-        <div className="article-content">{extractPlainText(post.content)}</div>
+        <div className="article-content">
+          <RichText content={post.content} />
+        </div>
         <section
           className="comments-section"
           aria-labelledby="comments-heading"

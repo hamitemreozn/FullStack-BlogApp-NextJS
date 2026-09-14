@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://astrology_app:ci-password@localhost:5432/astrology_blog
+      BETTER_AUTH_SECRET: ci-only-secret-that-is-long-enough-to-pass-validation
+      BETTER_AUTH_URL: http://localhost:3000
+      S3_ENDPOINT: http://localhost:9000
+      S3_REGION: us-east-1
+      S3_BUCKET: astrology-media
+      S3_ACCESS_KEY: ci-access-key
+      S3_SECRET_KEY: ci-only-storage-secret
+      S3_FORCE_PATH_STYLE: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run format
+      - run: npm run test
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run audit:prod

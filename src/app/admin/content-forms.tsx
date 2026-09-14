@@ -3,7 +3,8 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { slugify } from "@/lib/content";
+import { createDocument, slugify } from "@/lib/content";
+import { RichTextEditor } from "./rich-text-editor";
 
 type Category = { id: string; slug: string; title: string };
 type ManagedPost = {
@@ -11,7 +12,7 @@ type ManagedPost = {
   title: string;
   slug: string;
   excerpt: string;
-  body: string;
+  content: unknown;
   categoryId: string | null;
   coverImageKey: string | null;
   published: boolean;
@@ -63,6 +64,14 @@ export function ContentForms({
   const [message, setMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [editingPost, setEditingPost] = useState<ManagedPost | null>(null);
+  const [editorContent, setEditorContent] = useState<unknown>(() =>
+    createDocument(""),
+  );
+
+  function selectPost(post: ManagedPost | null) {
+    setEditingPost(post);
+    setEditorContent(post?.content ?? createDocument(""));
+  }
 
   async function createCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -112,7 +121,7 @@ export function ContentForms({
             title,
             slug: slugify(title),
             excerpt: String(form.get("excerpt") ?? ""),
-            body: String(form.get("body") ?? ""),
+            content: editorContent,
             categoryId: String(form.get("categoryId") ?? "") || null,
             coverImageKey,
             publish: form.get("publish") === "on",
@@ -120,7 +129,7 @@ export function ContentForms({
         },
       );
       if (!response.ok) throw new Error("Yazı kaydedilemedi.");
-      setEditingPost(null);
+      selectPost(null);
       setMessage(editingPost ? "Yazı güncellendi." : "Yazı kaydedildi.");
       router.refresh();
     } catch (error) {
@@ -143,7 +152,7 @@ export function ContentForms({
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Yazı silinemedi.");
-      if (editingPost?.id === post.id) setEditingPost(null);
+      if (editingPost?.id === post.id) selectPost(null);
       setMessage("Yazı silindi.");
       router.refresh();
     } catch (error) {
@@ -164,7 +173,7 @@ export function ContentForms({
           <button
             className="secondary-button"
             type="button"
-            onClick={() => setEditingPost(null)}
+            onClick={() => selectPost(null)}
           >
             Yeni yazı
           </button>
@@ -189,7 +198,7 @@ export function ContentForms({
                   <button
                     className="text-action"
                     type="button"
-                    onClick={() => setEditingPost(post)}
+                    onClick={() => selectPost(post)}
                   >
                     Düzenle
                   </button>
@@ -227,7 +236,7 @@ export function ContentForms({
             <button
               className="text-action"
               type="button"
-              onClick={() => setEditingPost(null)}
+              onClick={() => selectPost(null)}
             >
               İptal
             </button>
@@ -279,12 +288,10 @@ export function ContentForms({
         </label>
         <label className="field">
           İçerik
-          <textarea
-            name="body"
-            rows={12}
-            required
-            maxLength={20_000}
-            defaultValue={editingPost?.body}
+          <RichTextEditor
+            key={editingPost?.id ?? "new"}
+            initialContent={editorContent}
+            onChange={setEditorContent}
           />
         </label>
         <label className="checkbox-field">

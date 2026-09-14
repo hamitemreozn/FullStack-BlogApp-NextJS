@@ -10,14 +10,6 @@ import { database } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
-function extractPlainText(value: unknown): string {
-  if (typeof value === "string") return value;
-  if (Array.isArray(value)) return value.map(extractPlainText).join(" ");
-  if (value && typeof value === "object")
-    return Object.values(value).map(extractPlainText).join(" ");
-  return "";
-}
-
 export default async function AdminPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -77,7 +69,7 @@ export default async function AdminPage() {
             title: post.title,
             slug: post.slug,
             excerpt: post.excerpt,
-            body: extractPlainText(post.content),
+            content: post.content,
             categoryId: post.category_id,
             coverImageKey: post.cover_image_key,
             published: post.status === "PUBLISHED",

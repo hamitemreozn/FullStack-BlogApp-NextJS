@@ -1,5 +1,5 @@
 import { database } from "@/lib/database";
-import { createDocument, postInputSchema } from "@/lib/content";
+import { isMeaningfulRichTextDocument, postInputSchema } from "@/lib/content";
 import { hasTrustedOrigin, requireAdmin } from "@/lib/admin-api";
 
 export async function POST(request: Request) {
@@ -16,7 +16,13 @@ export async function POST(request: Request) {
   if (!parsed.success)
     return Response.json({ message: "Invalid post input" }, { status: 400 });
 
-  const { body, categoryId, coverImageKey, publish, ...post } = parsed.data;
+  const { content, categoryId, coverImageKey, publish, ...post } = parsed.data;
+  const document = isMeaningfulRichTextDocument(content);
+  if (!document)
+    return Response.json(
+      { message: "Yazı içeriği geçersiz." },
+      { status: 400 },
+    );
 
   try {
     const created = await database
@@ -26,7 +32,7 @@ export async function POST(request: Request) {
         category_id: categoryId,
         cover_image_key: coverImageKey,
         author_id: session.user.id,
-        content: createDocument(body),
+        content: document,
         status: publish ? "PUBLISHED" : "DRAFT",
         published_at: publish ? new Date() : null,
       })
