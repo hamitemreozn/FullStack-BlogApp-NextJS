@@ -30,7 +30,7 @@ Uygulama `http://localhost:3000`, yönetim girişi `http://localhost:3000/admin/
 İlk yerel yönetici, Better Auth komutuyla oluşturulur:
 
 ```powershell
-npx auth@latest create-admin --config src/lib/auth.ts --email admin@astrology.local --name "Local Administrator" --role admin --password "choose-a-unique-local-password" --yes
+npx auth@latest create-admin --config src/lib/auth-cli.ts --email admin@astrology.local --name "Local Administrator" --role admin --password "choose-a-unique-local-password" --yes
 ```
 
 Bu parola yalnızca yerel geliştirme içindir; gerçek bir proje parolasını repoya veya `.env.example` dosyasına yazma.

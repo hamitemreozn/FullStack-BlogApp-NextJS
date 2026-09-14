@@ -35,5 +35,6 @@ Each implementation checkpoint is reported as:
 ## Constraints
 
 - No former client secrets, database URLs, OAuth clients, Firebase projects, storage buckets, or hosting accounts may be used.
+- Use `src/lib/auth-cli.ts` for Better Auth's schema/admin CLI commands; the runtime auth module intentionally uses Next.js `server-only` protection.
 - Existing customer-facing names, images, links, prices, and copy may remain until the frontend refresh explicitly changes them.
 - No production deployment or third-party account creation happens without explicit approval.
