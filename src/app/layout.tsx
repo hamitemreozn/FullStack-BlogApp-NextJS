@@ -19,17 +19,27 @@ export default function RootLayout({
               <span className="brand-mark" aria-hidden="true">
                 ✦
               </span>
-              Murat İpek
+              <span>
+                <strong>Murat İpek</strong>
+                <small>Astroloji & Danışmanlık</small>
+              </span>
             </Link>
             <nav className="main-nav" aria-label="Ana menü">
-              <Link href="/">Yazılar</Link>
-              <Link href="/contact">Danışmanlıklar</Link>
-              <Link href="/admin/login">Yönetim</Link>
+              <Link href="/">Ana sayfa</Link>
+              <Link href="/#yazilar">Yazılar</Link>
+              <Link href="/contact">Danışmanlık</Link>
+              <Link className="nav-admin" href="/admin/login">
+                Yönetim
+              </Link>
             </nav>
           </header>
           {children}
           <footer className="site-footer">
-            © {new Date().getFullYear()} Murat İpek Astroloji
+            <div>
+              <p className="footer-wordmark">Murat İpek</p>
+              <p>Astroloji & kişisel farkındalık</p>
+            </div>
+            <p>© {new Date().getFullYear()} · Tüm hakları saklıdır.</p>
           </footer>
         </div>
       </body>

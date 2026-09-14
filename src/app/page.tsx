@@ -22,20 +22,59 @@ export default async function HomePage() {
   return (
     <main className="page-shell">
       <section className="hero">
-        <div>
-          <p className="eyebrow">Yıldızların izinde</p>
-          <h1>Gökyüzünün ritmini kendi hikâyenizde keşfedin.</h1>
+        <div className="hero-copy">
+          <p className="eyebrow">Kişisel astroloji danışmanlığı</p>
+          <h1>Gökyüzünün dili, hayatınızın pusulası.</h1>
           <p>
-            Astroloji yazıları, danışmanlıklar ve kişisel farkındalık için sade
-            bir alan.
+            Doğum haritanızın size anlattıklarını birlikte okuyalım;
+            kararlarınıza daha net, daha sakin bir yerden yaklaşın.
+          </p>
+          <div className="hero-actions">
+            <Link className="primary-button" href="/contact">
+              Danışmanlık talep et <span aria-hidden="true">↗</span>
+            </Link>
+            <Link className="text-button" href="#yazilar">
+              Yazıları keşfet <span aria-hidden="true">↓</span>
+            </Link>
+          </div>
+        </div>
+        <div className="hero-portrait-wrap">
+          <div className="hero-glow" aria-hidden="true" />
+          <Image
+            className="hero-portrait"
+            src="/mainphoto.jpeg"
+            alt="Murat İpek"
+            width={838}
+            height={816}
+            priority
+          />
+          <p className="portrait-caption">
+            Murat İpek <span>·</span> Astrolog
           </p>
         </div>
+        <span className="hero-orbit orbit-one" aria-hidden="true" />
+        <span className="hero-orbit orbit-two" aria-hidden="true" />
       </section>
-      <section aria-labelledby="posts-heading">
+      <section className="confidence-strip" aria-label="Danışmanlık yaklaşımı">
+        <p>
+          <span>01</span> Kişisel yorum
+        </p>
+        <p>
+          <span>02</span> Online görüşme
+        </p>
+        <p>
+          <span>03</span> Gizli & özenli yaklaşım
+        </p>
+      </section>
+      <section
+        className="journal-section"
+        id="yazilar"
+        aria-labelledby="posts-heading"
+      >
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Blog</p>
-            <h2 id="posts-heading">Son yazılar</h2>
+            <p className="eyebrow">Gökyüzü günlüğü</p>
+            <h2 id="posts-heading">Düşünmek için bir alan</h2>
           </div>
           <p>
             {posts.length ? `${posts.length} yayın` : "Yeni yayınlar yakında"}
@@ -67,11 +106,26 @@ export default async function HomePage() {
             ))}
           </div>
         ) : (
-          <p className="empty-state">
-            İlk yazı yönetim panelinden güvenle yayımlanabilir. Eski
-            uygulamadaki örnek/Lorem Ipsum kartları bu yüzden gösterilmiyor.
-          </p>
+          <div className="empty-state journal-empty">
+            <span className="empty-star" aria-hidden="true">
+              ✦
+            </span>
+            <h3>İlk notlar hazırlanıyor.</h3>
+            <p>
+              Gökyüzü hareketleri, ilişkiler ve kişisel döngüler üzerine yazılar
+              yakında burada olacak.
+            </p>
+          </div>
         )}
+      </section>
+      <section className="home-cta">
+        <div>
+          <p className="eyebrow">Kendi haritanıza yaklaşın</p>
+          <h2>Sorularınıza gökyüzünün penceresinden bakın.</h2>
+        </div>
+        <Link className="light-button" href="/contact">
+          Görüşme hakkında bilgi al <span aria-hidden="true">↗</span>
+        </Link>
       </section>
     </main>
   );
