@@ -6,7 +6,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' blob: data:",
+  `img-src 'self' blob: data:${storageOrigin ? ` ${storageOrigin}` : ""}`,
   "font-src 'self'",
   `connect-src 'self'${storageOrigin ? ` ${storageOrigin}` : ""}`,
   "object-src 'none'",
