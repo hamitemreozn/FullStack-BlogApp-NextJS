@@ -18,6 +18,7 @@ export async function GET(_: Request, context: CommentRouteContext) {
     .select("id")
     .where("slug", "=", slug)
     .where("status", "=", "PUBLISHED")
+    .where("published_at", "<=", new Date())
     .executeTakeFirst();
   if (!post)
     return Response.json({ message: "Yazı bulunamadı." }, { status: 404 });
@@ -60,6 +61,7 @@ export async function POST(request: Request, context: CommentRouteContext) {
     .select("id")
     .where("slug", "=", slug)
     .where("status", "=", "PUBLISHED")
+    .where("published_at", "<=", new Date())
     .executeTakeFirst();
   if (!post)
     return Response.json({ message: "Yazı bulunamadı." }, { status: 404 });

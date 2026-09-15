@@ -16,12 +16,22 @@ type ManagedPost = {
   categoryId: string | null;
   coverImageKey: string | null;
   published: boolean;
+  publishedAt: string | null;
+  scheduled: boolean;
   updatedAt: string;
 };
 type UploadForm = { url: string; fields: Record<string, string>; key: string };
 
 const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 const maxImageSizeBytes = 5 * 1024 * 1024;
+
+function toDateTimeLocal(value: string | null | undefined) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const pad = (part: number) => String(part).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
 
 async function uploadCoverImage(file: File) {
   if (!allowedImageTypes.has(file.type) || file.size > maxImageSizeBytes) {
@@ -137,6 +147,13 @@ export function ContentForms({
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const title = String(form.get("title") ?? "");
+    const scheduledValue = String(form.get("publishedAt") ?? "");
+    const scheduledDate = scheduledValue ? new Date(scheduledValue) : null;
+    if (scheduledDate && Number.isNaN(scheduledDate.getTime())) {
+      setMessage("Yayın zamanı geçerli bir tarih olmalı.");
+      return;
+    }
+    const publishedAt = scheduledDate?.toISOString() ?? null;
     setIsSaving(true);
     setMessage(null);
 
@@ -158,6 +175,7 @@ export function ContentForms({
             categoryId: String(form.get("categoryId") ?? "") || null,
             coverImageKey,
             publish: form.get("publish") === "on",
+            publishedAt,
           }),
         },
       );
@@ -214,39 +232,47 @@ export function ContentForms({
         </div>
         <div className="post-manager-list">
           {posts.length ? (
-            posts.map((post) => (
-              <article className="post-manager-item" key={post.id}>
-                <div>
-                  <span
-                    className={`status-badge ${post.published ? "is-published" : "is-draft"}`}
-                  >
-                    {post.published ? "Yayında" : "Taslak"}
-                  </span>
-                  <h3>{post.title}</h3>
-                  <p>
-                    Son değişiklik:{" "}
-                    {new Date(post.updatedAt).toLocaleDateString("tr-TR")}
-                  </p>
-                </div>
-                <div className="item-actions">
-                  <button
-                    className="text-action"
-                    type="button"
-                    onClick={() => selectPost(post)}
-                  >
-                    Düzenle
-                  </button>
-                  <button
-                    className="danger-action"
-                    type="button"
-                    disabled={isSaving}
-                    onClick={() => deletePost(post)}
-                  >
-                    Sil
-                  </button>
-                </div>
-              </article>
-            ))
+            posts.map((post) => {
+              return (
+                <article className="post-manager-item" key={post.id}>
+                  <div>
+                    <span
+                      className={`status-badge ${post.published && !post.scheduled ? "is-published" : "is-draft"}`}
+                    >
+                      {post.scheduled
+                        ? "Planlandı"
+                        : post.published
+                          ? "Yayında"
+                          : "Taslak"}
+                    </span>
+                    <h3>{post.title}</h3>
+                    <p>
+                      {post.scheduled ? "Yayın zamanı" : "Son değişiklik"}:{" "}
+                      {new Date(
+                        post.scheduled ? post.publishedAt! : post.updatedAt,
+                      ).toLocaleDateString("tr-TR")}
+                    </p>
+                  </div>
+                  <div className="item-actions">
+                    <button
+                      className="text-action"
+                      type="button"
+                      onClick={() => selectPost(post)}
+                    >
+                      Düzenle
+                    </button>
+                    <button
+                      className="danger-action"
+                      type="button"
+                      disabled={isSaving}
+                      onClick={() => deletePost(post)}
+                    >
+                      Sil
+                    </button>
+                  </div>
+                </article>
+              );
+            })
           ) : (
             <p className="manager-empty">
               Henüz bir yazı yok. İlk yazınızı aşağıdaki formdan oluşturun.
@@ -356,7 +382,18 @@ export function ContentForms({
             type="checkbox"
             defaultChecked={editingPost?.published}
           />{" "}
-          Hemen yayımla
+          Yayına al
+        </label>
+        <label className="field">
+          Yayın zamanı (boş bırakılırsa hemen)
+          <input
+            name="publishedAt"
+            type="datetime-local"
+            defaultValue={toDateTimeLocal(editingPost?.publishedAt)}
+          />
+          <span className="field-hint">
+            Gelecek bir tarih seçerseniz yazı o ana kadar kamuya açık olmaz.
+          </span>
         </label>
         <button className="primary-button" disabled={isSaving}>
           {isSaving

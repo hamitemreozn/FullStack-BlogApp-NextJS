@@ -18,6 +18,7 @@ export const postInputSchema = z.object({
     .regex(/^posts\/[^/]+\/[0-9a-f-]{36}\.(jpg|png|webp)$/)
     .nullable(),
   publish: z.boolean(),
+  publishedAt: z.string().datetime({ offset: true }).nullable(),
 });
 
 export function slugify(value: string) {

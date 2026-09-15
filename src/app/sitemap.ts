@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .selectFrom("posts")
     .select(["slug", "updated_at"])
     .where("status", "=", "PUBLISHED")
+    .where("published_at", "<=", new Date())
     .orderBy("published_at", "desc")
     .execute();
 

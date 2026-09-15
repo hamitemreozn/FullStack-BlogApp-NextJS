@@ -18,5 +18,6 @@ export const getPublishedPost = cache(async (slug: string) =>
     ])
     .where("posts.slug", "=", slug)
     .where("posts.status", "=", "PUBLISHED")
+    .where("posts.published_at", "<=", new Date())
     .executeTakeFirst(),
 );

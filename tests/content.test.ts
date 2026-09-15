@@ -4,6 +4,7 @@ import {
   createDocument,
   isMeaningfulRichTextDocument,
   normalizeRichTextDocument,
+  postInputSchema,
   richTextToPlainText,
   slugify,
 } from "../src/lib/content";
@@ -97,5 +98,27 @@ describe("content security", () => {
 
   it("creates Turkish-safe slugs", () => {
     expect(slugify("Gökyüzü & İlişkiler")).toBe("gokyuzu-iliskiler");
+  });
+
+  it("accepts an ISO publication time and rejects an invalid planned publish time", () => {
+    const basePost = {
+      title: "Planlı yayın",
+      slug: "planli-yayin",
+      excerpt: "",
+      content: createDocument("Güvenli içerik"),
+      categoryId: null,
+      coverImageKey: null,
+      publish: true,
+    };
+
+    expect(
+      postInputSchema.safeParse({
+        ...basePost,
+        publishedAt: "2026-12-20T09:00:00.000Z",
+      }).success,
+    ).toBe(true);
+    expect(
+      postInputSchema.safeParse({ ...basePost, publishedAt: "yarın" }).success,
+    ).toBe(false);
   });
 });

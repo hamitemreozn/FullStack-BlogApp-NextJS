@@ -16,6 +16,7 @@ export default async function HomePage() {
       "categories.title as category_title",
     ])
     .where("posts.status", "=", "PUBLISHED")
+    .where("posts.published_at", "<=", new Date())
     .orderBy("posts.published_at", "desc")
     .limit(9)
     .execute();

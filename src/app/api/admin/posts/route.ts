@@ -17,7 +17,8 @@ export async function POST(request: Request) {
   if (!parsed.success)
     return Response.json({ message: "Invalid post input" }, { status: 400 });
 
-  const { content, categoryId, coverImageKey, publish, ...post } = parsed.data;
+  const { content, categoryId, coverImageKey, publish, publishedAt, ...post } =
+    parsed.data;
   const document = isMeaningfulRichTextDocument(content);
   if (!document)
     return Response.json(
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
         author_id: session.user.id,
         content: document,
         status: publish ? "PUBLISHED" : "DRAFT",
-        published_at: publish ? new Date() : null,
+        published_at: publish ? new Date(publishedAt ?? Date.now()) : null,
       })
       .returning(["id", "slug", "status"])
       .executeTakeFirstOrThrow();

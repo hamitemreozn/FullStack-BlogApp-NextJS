@@ -33,6 +33,7 @@ export default async function AdminPage() {
       "category_id",
       "cover_image_key",
       "status",
+      "published_at",
       "updated_at",
     ])
     .orderBy("updated_at", "desc")
@@ -73,6 +74,11 @@ export default async function AdminPage() {
             categoryId: post.category_id,
             coverImageKey: post.cover_image_key,
             published: post.status === "PUBLISHED",
+            publishedAt: post.published_at?.toISOString() ?? null,
+            scheduled:
+              post.status === "PUBLISHED" &&
+              post.published_at !== null &&
+              post.published_at > new Date(),
             updatedAt: post.updated_at.toISOString(),
           }))}
         />

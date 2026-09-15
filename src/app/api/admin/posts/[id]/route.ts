@@ -58,7 +58,8 @@ export async function PATCH(request: Request, context: PostRouteContext) {
     );
   }
 
-  const { content, categoryId, coverImageKey, publish, ...post } = parsed.data;
+  const { content, categoryId, coverImageKey, publish, publishedAt, ...post } =
+    parsed.data;
   const document = isMeaningfulRichTextDocument(content);
   if (!document) {
     return Response.json(
@@ -92,7 +93,7 @@ export async function PATCH(request: Request, context: PostRouteContext) {
         cover_image_key: coverImageKey,
         content: document,
         status: publish ? "PUBLISHED" : "DRAFT",
-        published_at: publish ? new Date() : null,
+        published_at: publish ? new Date(publishedAt ?? Date.now()) : null,
         updated_at: new Date(),
       })
       .where("id", "=", authorized.id)

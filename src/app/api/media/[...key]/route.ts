@@ -12,6 +12,7 @@ export async function GET(_: Request, { params }: MediaRouteProps) {
     .select("id")
     .where("cover_image_key", "=", key)
     .where("status", "=", "PUBLISHED")
+    .where("published_at", "<=", new Date())
     .executeTakeFirst();
 
   if (!publishedPost) {
