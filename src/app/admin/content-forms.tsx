@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { createDocument, slugify } from "@/lib/content";
@@ -53,6 +53,14 @@ async function uploadCoverImage(file: File) {
   return upload.key;
 }
 
+async function responseError(response: Response, fallback: string) {
+  const payload = (await response.json().catch(() => null)) as {
+    error?: string;
+    message?: string;
+  } | null;
+  return payload?.message ?? payload?.error ?? fallback;
+}
+
 export function ContentForms({
   categories,
   posts,
@@ -67,15 +75,38 @@ export function ContentForms({
   const [editorContent, setEditorContent] = useState<unknown>(() =>
     createDocument(""),
   );
+  const [editorVersion, setEditorVersion] = useState(0);
+  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
+  const coverPreviewUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (coverPreviewUrlRef.current)
+        URL.revokeObjectURL(coverPreviewUrlRef.current);
+    };
+  }, []);
+
+  function selectCoverImage(file: File | null) {
+    if (coverPreviewUrlRef.current)
+      URL.revokeObjectURL(coverPreviewUrlRef.current);
+    const previewUrl = file ? URL.createObjectURL(file) : null;
+    coverPreviewUrlRef.current = previewUrl;
+    setCoverImage(file);
+    setCoverPreviewUrl(previewUrl);
+  }
 
   function selectPost(post: ManagedPost | null) {
     setEditingPost(post);
     setEditorContent(post?.content ?? createDocument(""));
+    selectCoverImage(null);
+    setEditorVersion((version) => version + 1);
   }
 
   async function createCategory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const title = String(form.get("title") ?? "");
     setIsSaving(true);
     setMessage(null);
@@ -86,13 +117,16 @@ export function ContentForms({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ title, slug: slugify(title) }),
       });
-      if (!response.ok) throw new Error("Kategori kaydedilemedi.");
-      event.currentTarget.reset();
+      if (!response.ok)
+        throw new Error(
+          await responseError(response, "Kategori kaydedilemedi."),
+        );
+      formElement.reset();
       setMessage("Kategori kaydedildi.");
       router.refresh();
-    } catch {
+    } catch (error) {
       setMessage(
-        "Kategori kaydedilemedi. Başlığın benzersiz olduğundan emin ol.",
+        error instanceof Error ? error.message : "Kategori kaydedilemedi.",
       );
     } finally {
       setIsSaving(false);
@@ -103,13 +137,12 @@ export function ContentForms({
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const title = String(form.get("title") ?? "");
-    const coverImage = form.get("coverImage");
     setIsSaving(true);
     setMessage(null);
 
     try {
       const coverImageKey =
-        coverImage instanceof File && coverImage.size > 0
+        coverImage && coverImage.size > 0
           ? await uploadCoverImage(coverImage)
           : (editingPost?.coverImageKey ?? null);
       const response = await fetch(
@@ -128,7 +161,8 @@ export function ContentForms({
           }),
         },
       );
-      if (!response.ok) throw new Error("Yazı kaydedilemedi.");
+      if (!response.ok)
+        throw new Error(await responseError(response, "Yazı kaydedilemedi."));
       selectPost(null);
       setMessage(editingPost ? "Yazı güncellendi." : "Yazı kaydedildi.");
       router.refresh();
@@ -222,7 +256,7 @@ export function ContentForms({
       </section>
       <form
         className="form-stack content-editor"
-        key={editingPost?.id ?? "new"}
+        key={editorVersion}
         onSubmit={savePost}
       >
         <div className="manager-heading">
@@ -273,27 +307,49 @@ export function ContentForms({
             ))}
           </select>
         </label>
-        <label className="field">
-          Kapak görseli (JPG, PNG veya WebP; en fazla 5 MB)
+        <div className="field">
+          <span>Kapak görseli (JPG, PNG veya WebP; en fazla 5 MB)</span>
           <input
+            className="visually-hidden-file-input"
+            id="cover-image"
             name="coverImage"
             type="file"
             accept="image/jpeg,image/png,image/webp"
+            onChange={(event) =>
+              selectCoverImage(event.currentTarget.files?.[0] ?? null)
+            }
           />
-          {editingPost?.coverImageKey ? (
+          <label className="file-picker" htmlFor="cover-image">
+            <span className="file-picker-button">Görsel seç</span>
+            <span className="file-picker-name">
+              {coverImage?.name ??
+                (editingPost?.coverImageKey
+                  ? "Mevcut kapak korunuyor"
+                  : "Henüz dosya seçilmedi")}
+            </span>
+          </label>
+          {coverPreviewUrl ? (
+            <div
+              className="cover-preview"
+              role="img"
+              aria-label="Seçilen kapak görseli önizlemesi"
+              style={{ backgroundImage: `url(${coverPreviewUrl})` }}
+            />
+          ) : null}
+          {editingPost?.coverImageKey && !coverImage ? (
             <span className="field-hint">
               Yeni görsel seçilmezse mevcut kapak korunur.
             </span>
           ) : null}
-        </label>
-        <label className="field">
-          İçerik
+        </div>
+        <div className="field">
+          <span>İçerik</span>
           <RichTextEditor
-            key={editingPost?.id ?? "new"}
+            key={editorVersion}
             initialContent={editorContent}
             onChange={setEditorContent}
           />
-        </label>
+        </div>
         <label className="checkbox-field">
           <input
             name="publish"

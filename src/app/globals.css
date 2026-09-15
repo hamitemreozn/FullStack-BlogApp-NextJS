@@ -911,6 +911,59 @@ button {
   min-height: 160px;
   resize: vertical;
 }
+.visually-hidden-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.file-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  border: 1px dashed rgba(73, 55, 92, 0.28);
+  border-radius: 10px;
+  padding: 8px;
+  color: var(--muted);
+  background: #fffdf9;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
+}
+.file-picker:hover,
+.visually-hidden-file-input:focus-visible + .file-picker {
+  border-color: var(--plum);
+  background: #f5eff8;
+}
+.file-picker-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 7px;
+  padding: 0 11px;
+  color: var(--paper);
+  background: var(--plum);
+  font-size: 0.73rem;
+  font-weight: 750;
+}
+.file-picker-name {
+  overflow: hidden;
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cover-preview {
+  width: min(100%, 420px);
+  height: 210px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background-position: center;
+  background-size: cover;
+}
 .rich-text-editor {
   overflow: hidden;
   border: 1px solid rgba(73, 55, 92, 0.2);
@@ -943,6 +996,11 @@ button {
 .editor-toolbar button:hover {
   border-color: var(--plum);
   background: #eee7f4;
+}
+.editor-toolbar button.is-active {
+  border-color: var(--plum);
+  color: #fffdfb;
+  background: var(--plum);
 }
 .rich-text-input {
   min-height: 270px;
@@ -988,6 +1046,15 @@ button {
   border-left: 2px solid var(--gold);
   color: var(--plum);
   font-style: italic;
+}
+.editor-hint {
+  margin: 0;
+  padding: 0 16px 13px;
+  color: var(--muted);
+  background: #fff;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.45;
 }
 .field input:focus,
 .field textarea:focus,
