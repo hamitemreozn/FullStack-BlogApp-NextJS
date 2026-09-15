@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { allowComment } from "@/lib/comment-security";
 import { database } from "@/lib/database";
-import { env } from "@/lib/env";
+import { hasTrustedOrigin } from "@/lib/origin";
 
 const commentInputSchema = z.object({
   authorName: z.string().trim().min(2).max(80),
@@ -33,8 +33,7 @@ export async function GET(_: Request, context: CommentRouteContext) {
 }
 
 export async function POST(request: Request, context: CommentRouteContext) {
-  const origin = request.headers.get("origin");
-  if (origin !== null && origin !== env.BETTER_AUTH_URL) {
+  if (!hasTrustedOrigin(request)) {
     return Response.json(
       { message: "Geçersiz istek kaynağı." },
       { status: 403 },

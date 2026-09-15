@@ -1,10 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
+import { siteDescription, siteName, siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Murat İpek | Astroloji",
-  description: "Astroloji yazıları ve danışmanlık bilgileri.",
+  metadataBase: siteUrl,
+  title: {
+    default: siteName,
+    template: "%s | Murat İpek Astroloji",
+  },
+  description: siteDescription,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({

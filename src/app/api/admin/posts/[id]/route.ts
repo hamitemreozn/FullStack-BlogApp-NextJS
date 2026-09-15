@@ -3,6 +3,7 @@ import { z } from "zod";
 import { hasTrustedOrigin, requireAdmin } from "@/lib/admin-api";
 import { isMeaningfulRichTextDocument, postInputSchema } from "@/lib/content";
 import { database } from "@/lib/database";
+import { discardImage, verifyOwnedImage } from "@/lib/storage";
 
 const postIdSchema = z.string().uuid();
 type PostRouteContext = { params: Promise<{ id: string }> };
@@ -20,7 +21,8 @@ async function getAuthorizedPostId(
     };
   }
 
-  if (!(await requireAdmin(request.headers))) {
+  const session = await requireAdmin(request.headers);
+  if (!session) {
     return {
       error: Response.json(
         { message: "Yönetici yetkisi gerekli." },
@@ -39,7 +41,7 @@ async function getAuthorizedPostId(
     };
   }
 
-  return { id: parsedId.data };
+  return { id: parsedId.data, session };
 }
 
 export async function PATCH(request: Request, context: PostRouteContext) {
@@ -64,6 +66,23 @@ export async function PATCH(request: Request, context: PostRouteContext) {
       { status: 400 },
     );
   }
+  if (
+    coverImageKey &&
+    !(await verifyOwnedImage(authorized.session.user.id, coverImageKey))
+  ) {
+    return Response.json(
+      { message: "Kapak görseli doğrulanamadı. Lütfen yeniden yükleyin." },
+      { status: 400 },
+    );
+  }
+  const previous = await database
+    .selectFrom("posts")
+    .select("cover_image_key")
+    .where("id", "=", authorized.id)
+    .executeTakeFirst();
+  if (!previous) {
+    return Response.json({ message: "Yazı bulunamadı." }, { status: 404 });
+  }
   try {
     const updated = await database
       .updateTable("posts")
@@ -84,6 +103,13 @@ export async function PATCH(request: Request, context: PostRouteContext) {
       return Response.json({ message: "Yazı bulunamadı." }, { status: 404 });
     }
 
+    if (
+      previous.cover_image_key &&
+      previous.cover_image_key !== coverImageKey
+    ) {
+      discardImage(previous.cover_image_key).catch(console.error);
+    }
+
     return Response.json(updated);
   } catch {
     return Response.json(
@@ -100,12 +126,15 @@ export async function DELETE(request: Request, context: PostRouteContext) {
   const deleted = await database
     .deleteFrom("posts")
     .where("id", "=", authorized.id)
-    .returning("id")
+    .returning(["id", "cover_image_key"])
     .executeTakeFirst();
 
   if (!deleted) {
     return Response.json({ message: "Yazı bulunamadı." }, { status: 404 });
   }
+
+  if (deleted.cover_image_key)
+    discardImage(deleted.cover_image_key).catch(console.error);
 
   return new Response(null, { status: 204 });
 }

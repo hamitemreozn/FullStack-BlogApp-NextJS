@@ -1,4 +1,12 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Danışmanlık",
+  description:
+    "Astroloji danışmanlığı hakkında bilgi alın ve görüşme talep edin.",
+  alternates: { canonical: "/contact" },
+};
 
 export default function ContactPage() {
   return (

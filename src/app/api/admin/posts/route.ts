@@ -1,6 +1,7 @@
 import { database } from "@/lib/database";
 import { isMeaningfulRichTextDocument, postInputSchema } from "@/lib/content";
 import { hasTrustedOrigin, requireAdmin } from "@/lib/admin-api";
+import { verifyOwnedImage } from "@/lib/storage";
 
 export async function POST(request: Request) {
   if (!hasTrustedOrigin(request))
@@ -21,6 +22,14 @@ export async function POST(request: Request) {
   if (!document)
     return Response.json(
       { message: "Yazı içeriği geçersiz." },
+      { status: 400 },
+    );
+  if (
+    coverImageKey &&
+    !(await verifyOwnedImage(session.user.id, coverImageKey))
+  )
+    return Response.json(
+      { message: "Kapak görseli doğrulanamadı. Lütfen yeniden yükleyin." },
       { status: 400 },
     );
 

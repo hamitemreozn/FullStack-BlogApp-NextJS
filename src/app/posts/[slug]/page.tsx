@@ -1,30 +1,51 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { CommentForm } from "./comment-form";
 import { RichText } from "@/components/rich-text";
 import { database } from "@/lib/database";
+import { getPublishedPost } from "@/lib/public-posts";
+import { absoluteSiteUrl, siteName } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
 type PostPageProps = { params: Promise<{ slug: string }> };
 
+export async function generateMetadata({
+  params,
+}: PostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPublishedPost(slug);
+  if (!post) return { title: "Yazı bulunamadı", robots: { index: false } };
+
+  const image = post.cover_image_key
+    ? `/api/media/${post.cover_image_key}`
+    : "/opengraph-image";
+  return {
+    title: post.title,
+    description: post.excerpt || `${post.title} · ${siteName}`,
+    alternates: { canonical: `/posts/${slug}` },
+    openGraph: {
+      type: "article",
+      url: absoluteSiteUrl(`/posts/${slug}`),
+      title: post.title,
+      description: post.excerpt || undefined,
+      publishedTime: post.published_at?.toISOString(),
+      images: [{ url: image, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt || undefined,
+      images: [image],
+    },
+  };
+}
+
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
-  const post = await database
-    .selectFrom("posts")
-    .leftJoin("categories", "categories.id", "posts.category_id")
-    .select([
-      "posts.title",
-      "posts.excerpt",
-      "posts.content",
-      "posts.cover_image_key",
-      "posts.published_at",
-      "categories.title as category_title",
-    ])
-    .where("posts.slug", "=", slug)
-    .where("posts.status", "=", "PUBLISHED")
-    .executeTakeFirst();
+  const post = await getPublishedPost(slug);
   if (!post) notFound();
   const comments = await database
     .selectFrom("comments")

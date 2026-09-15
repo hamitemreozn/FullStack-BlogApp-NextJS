@@ -10,7 +10,8 @@ export function PasswordForm() {
 
   async function changePassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const currentPassword = String(form.get("currentPassword") ?? "");
     const newPassword = String(form.get("newPassword") ?? "");
     const confirmPassword = String(form.get("confirmPassword") ?? "");
@@ -38,7 +39,7 @@ export function PasswordForm() {
       return;
     }
 
-    event.currentTarget.reset();
+    formElement.reset();
     setMessage("Parola güncellendi; diğer açık oturumlar kapatıldı.");
   }
 
