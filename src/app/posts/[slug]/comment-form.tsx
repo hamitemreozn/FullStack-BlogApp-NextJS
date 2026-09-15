@@ -10,7 +10,11 @@ export function CommentForm({ slug }: { slug: string }) {
 
   async function submitComment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    // React olay nesnesi `await` sonrasında geçersizleşebildiği için formu
+    // istek başlamadan önce saklıyoruz. Aksi halde yorum kaydolsa bile
+    // `event.currentTarget.reset()` null ile çağrılıp kullanıcıya hata görünür.
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     setIsSending(true);
     setMessage(null);
 
@@ -29,7 +33,7 @@ export function CommentForm({ slug }: { slug: string }) {
       } | null;
       if (!response.ok)
         throw new Error(result?.message ?? "Yorum gönderilemedi.");
-      event.currentTarget.reset();
+      formElement.reset();
       setMessage("Yorumunuz alındı. Yayınlanmadan önce onaylanır.");
       router.refresh();
     } catch (error) {
