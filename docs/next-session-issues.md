@@ -50,10 +50,15 @@ Reported on 2026-09-15 and investigated on 2026-09-15.
 - Diagnosis: the uploaded image is present in MinIO, but no published post in
   PostgreSQL references its object key. The missing image is therefore a failed
   post-save/linkage outcome, not a MinIO delivery failure.
+- Follow-up diagnosis: after a post was successfully published, its key and
+  MinIO object were both correct. The actual rendering failure came from
+  Next.js image optimization rejecting the private-media route's signed
+  redirect as an invalid internal image response.
 - Fix: show the post API's actual safe error message instead of a generic one,
-  so any remaining save validation issue is visible; add a selected-image
-  preview before saving. Retest by publishing one new post after the session
-  fix, then confirm its object key is stored with the post.
+  add a selected-image preview before saving, and serve private media through
+  the browser directly (`unoptimized`) so it can follow the short-lived signed
+  redirect. The post page was visually verified and the media request returned
+  `200 image/jpeg`.
 
 ## 5. File selection control needs design work
 

@@ -81,6 +81,7 @@ export default async function HomePage() {
                     alt=""
                     width={640}
                     height={360}
+                    unoptimized
                   />
                 ) : null}
                 <span className="meta">

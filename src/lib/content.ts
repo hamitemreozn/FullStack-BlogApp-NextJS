@@ -36,7 +36,9 @@ export function slugify(value: string) {
 export function createDocument(body: string) {
   return {
     type: "doc",
-    content: [{ type: "paragraph", content: [{ type: "text", text: body }] }],
+    content: body
+      ? [{ type: "paragraph", content: [{ type: "text", text: body }] }]
+      : [{ type: "paragraph" }],
   };
 }
 

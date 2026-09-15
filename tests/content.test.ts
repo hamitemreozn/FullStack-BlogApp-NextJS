@@ -89,6 +89,10 @@ describe("content security", () => {
     expect(
       isMeaningfulRichTextDocument(createDocument("İlk güvenli yazı")),
     ).not.toBeNull();
+    expect(normalizeRichTextDocument(createDocument(""))).toEqual({
+      type: "doc",
+      content: [{ type: "paragraph" }],
+    });
   });
 
   it("creates Turkish-safe slugs", () => {

@@ -54,6 +54,7 @@ export default async function PostPage({ params }: PostPageProps) {
             width={1200}
             height={675}
             priority
+            unoptimized
           />
         ) : null}
         <div className="article-content">
