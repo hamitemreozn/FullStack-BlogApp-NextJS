@@ -28,7 +28,7 @@ export default function RootLayout({
               <Link href="/">Ana sayfa</Link>
               <Link href="/#yazilar">Yazılar</Link>
               <Link href="/contact">Danışmanlık</Link>
-              <Link className="nav-admin" href="/admin/login">
+              <Link className="nav-admin" href="/admin">
                 Yönetim
               </Link>
             </nav>

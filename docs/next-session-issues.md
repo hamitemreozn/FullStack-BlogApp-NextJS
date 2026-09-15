@@ -12,9 +12,14 @@ Reported on 2026-09-15 and investigated on 2026-09-15.
 - Diagnosis: the sessions themselves are valid for seven days. Better Auth's
   default cookie prefix is shared by all applications on `localhost` (ports do
   not isolate cookies), so another local project can overwrite this session.
-- Fix: use the project-specific `astrology-blog` cookie prefix. In development,
-  explicitly support both `localhost:3000` and `127.0.0.1:3000` as separate,
-  trusted local hosts. One fresh login is required after this cookie rename.
+- Follow-up diagnosis: the actual reported navigation issue was not session
+  loss. The header's “Yönetim” link incorrectly pointed to `/admin/login`,
+  which always showed the login form even with a valid session.
+- Fix: use the project-specific `astrology-blog` cookie prefix as defence in
+  depth, explicitly support both local hosts in development, point the header
+  to `/admin`, and redirect an already authenticated user from `/admin/login`
+  to `/admin`. The authenticated route and redirect were tested with the same
+  browser cookie jar.
 
 ## 2. Rich-text editor interaction is confusing
 
