@@ -4,8 +4,26 @@ import { database } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
-  const posts = await database
+type HomePageProps = {
+  searchParams: Promise<{
+    category?: string | string[];
+    page?: string | string[];
+    q?: string | string[];
+  }>;
+};
+
+const pageSize = 9;
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const parameters = await searchParams;
+  const query = typeof parameters.q === "string" ? parameters.q.trim() : "";
+  const category =
+    typeof parameters.category === "string" ? parameters.category : "";
+  const requestedPage =
+    typeof parameters.page === "string" ? Number(parameters.page) : 1;
+  const page =
+    Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  let postsQuery = database
     .selectFrom("posts")
     .leftJoin("categories", "categories.id", "posts.category_id")
     .select([
@@ -16,10 +34,40 @@ export default async function HomePage() {
       "categories.title as category_title",
     ])
     .where("posts.status", "=", "PUBLISHED")
-    .where("posts.published_at", "<=", new Date())
+    .where("posts.published_at", "<=", new Date());
+
+  if (category) postsQuery = postsQuery.where("categories.slug", "=", category);
+  if (query) {
+    const term = `%${query}%`;
+    postsQuery = postsQuery.where((expressionBuilder) =>
+      expressionBuilder.or([
+        expressionBuilder("posts.title", "ilike", term),
+        expressionBuilder("posts.excerpt", "ilike", term),
+      ]),
+    );
+  }
+
+  const fetchedPosts = await postsQuery
     .orderBy("posts.published_at", "desc")
-    .limit(9)
+    .limit(pageSize + 1)
+    .offset((page - 1) * pageSize)
     .execute();
+  const hasNextPage = fetchedPosts.length > pageSize;
+  const posts = fetchedPosts.slice(0, pageSize);
+  const categories = await database
+    .selectFrom("categories")
+    .select(["slug", "title"])
+    .orderBy("title")
+    .execute();
+  const pageHref = (targetPage: number) => {
+    const nextParameters = new URLSearchParams();
+    if (query) nextParameters.set("q", query);
+    if (category) nextParameters.set("category", category);
+    if (targetPage > 1) nextParameters.set("page", String(targetPage));
+    const value = nextParameters.toString();
+    return `/${value ? `?${value}` : ""}#yazilar`;
+  };
+
   return (
     <main className="page-shell">
       <section className="hero">
@@ -67,41 +115,92 @@ export default async function HomePage() {
             {posts.length ? `${posts.length} yayın` : "Yeni yayınlar yakında"}
           </p>
         </div>
+        <form className="journal-filters" action="/" method="get">
+          <label>
+            <span>Yazılarda ara</span>
+            <input defaultValue={query} name="q" placeholder="Örn. Venüs" />
+          </label>
+          <label>
+            <span>Kategori</span>
+            <select defaultValue={category} name="category">
+              <option value="">Tüm kategoriler</option>
+              {categories.map((item) => (
+                <option key={item.slug} value={item.slug}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="secondary-button" type="submit">
+            Filtrele
+          </button>
+          {query || category ? (
+            <Link className="text-action" href="/#yazilar">
+              Temizle
+            </Link>
+          ) : null}
+        </form>
         {posts.length ? (
-          <div className="post-grid">
-            {posts.map((post) => (
-              <Link
-                className="post-card"
-                href={`/posts/${post.slug}`}
-                key={post.slug}
-              >
-                {post.cover_image_key ? (
-                  <Image
-                    className="post-cover"
-                    src={`/api/media/${post.cover_image_key}`}
-                    alt=""
-                    width={640}
-                    height={360}
-                    unoptimized
-                  />
-                ) : null}
-                <span className="meta">
-                  {post.category_title ?? "Astroloji"}
-                </span>
-                <h3>{post.title}</h3>
-                <p>{post.excerpt}</p>
-              </Link>
-            ))}
-          </div>
+          <>
+            <div className="post-grid">
+              {posts.map((post) => (
+                <Link
+                  className="post-card"
+                  href={`/posts/${post.slug}`}
+                  key={post.slug}
+                >
+                  {post.cover_image_key ? (
+                    <Image
+                      className="post-cover"
+                      src={`/api/media/${post.cover_image_key}`}
+                      alt=""
+                      width={640}
+                      height={360}
+                      unoptimized
+                    />
+                  ) : null}
+                  <span className="meta">
+                    {post.category_title ?? "Astroloji"}
+                  </span>
+                  <h3>{post.title}</h3>
+                  <p>{post.excerpt}</p>
+                </Link>
+              ))}
+            </div>
+            {page > 1 || hasNextPage ? (
+              <nav className="pagination" aria-label="Yazı sayfaları">
+                {page > 1 ? (
+                  <Link className="secondary-button" href={pageHref(page - 1)}>
+                    Önceki
+                  </Link>
+                ) : (
+                  <span />
+                )}
+                <span>{page}. sayfa</span>
+                {hasNextPage ? (
+                  <Link className="secondary-button" href={pageHref(page + 1)}>
+                    Sonraki
+                  </Link>
+                ) : (
+                  <span />
+                )}
+              </nav>
+            ) : null}
+          </>
         ) : (
           <div className="empty-state journal-empty">
             <span className="empty-star" aria-hidden="true">
               ✦
             </span>
-            <h3>İlk notlar hazırlanıyor.</h3>
+            <h3>
+              {query || category
+                ? "Eşleşen yazı bulunamadı."
+                : "İlk notlar hazırlanıyor."}
+            </h3>
             <p>
-              Gökyüzü hareketleri, ilişkiler ve kişisel döngüler üzerine yazılar
-              yakında burada olacak.
+              {query || category
+                ? "Başka bir arama veya kategori deneyebilirsiniz."
+                : "Gökyüzü hareketleri, ilişkiler ve kişisel döngüler üzerine yazılar yakında burada olacak."}
             </p>
           </div>
         )}

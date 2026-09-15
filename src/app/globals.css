@@ -246,6 +246,51 @@ button {
   color: var(--muted);
   font-size: 0.82rem;
 }
+.journal-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 252, 248, 0.58);
+}
+.journal-filters label {
+  display: grid;
+  gap: 6px;
+  flex: 1 1 190px;
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+.journal-filters input,
+.journal-filters select {
+  min-height: 42px;
+  width: 100%;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  background: var(--paper);
+}
+.pagination {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+.pagination > :first-child {
+  justify-self: start;
+}
+.pagination > :last-child {
+  justify-self: end;
+}
 .post-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
