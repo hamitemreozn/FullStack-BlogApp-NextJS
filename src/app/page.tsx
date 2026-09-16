@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./home.module.css";
+import { JournalFilters } from "./journal-filters";
 import { database } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
@@ -116,31 +117,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             {posts.length ? `${posts.length} yayın` : "Yeni yayınlar yakında"}
           </p>
         </div>
-        <form className="journal-filters" action="/" method="get">
-          <label>
-            <span>Yazılarda ara</span>
-            <input defaultValue={query} name="q" placeholder="Örn. Venüs" />
-          </label>
-          <label>
-            <span>Kategori</span>
-            <select defaultValue={category} name="category">
-              <option value="">Tüm kategoriler</option>
-              {categories.map((item) => (
-                <option key={item.slug} value={item.slug}>
-                  {item.title}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button className="secondary-button" type="submit">
-            Filtrele
-          </button>
-          {query || category ? (
-            <Link className="text-action" href="/#yazilar">
-              Temizle
-            </Link>
-          ) : null}
-        </form>
+        <JournalFilters
+          categories={categories}
+          initialCategory={category}
+          initialQuery={query}
+          key={`${query}:${category}`}
+        />
         {posts.length ? (
           <>
             <div className="post-grid">
