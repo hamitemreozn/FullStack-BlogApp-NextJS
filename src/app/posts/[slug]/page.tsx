@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import styles from "./post.module.css";
 import { CommentForm } from "./comment-form";
 import { RichText } from "@/components/rich-text";
 import { database } from "@/lib/database";
@@ -61,7 +62,7 @@ export default async function PostPage({ params }: PostPageProps) {
     .orderBy("comments.created_at", "asc")
     .execute();
   return (
-    <main className="page-shell">
+    <main className={`${styles.postPage} page-shell`}>
       <article className="article">
         <p className="eyebrow">{post.category_title ?? "Astroloji"}</p>
         <h1>{post.title}</h1>

@@ -1,0 +1,158 @@
+.postPage :global(.article) {
+  width: min(790px, 100%);
+  margin-inline: auto;
+  padding-top: 45px;
+}
+
+.postPage :global(.article h1) {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+.postPage :global(.article .meta) {
+  display: block;
+  margin-top: 19px;
+}
+
+.postPage :global(.article-content) {
+  margin-top: 36px;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 1.17rem;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+
+.postPage :global(.rich-text-content > :first-child) {
+  margin-top: 0;
+}
+
+.postPage :global(.rich-text-content > :last-child) {
+  margin-bottom: 0;
+}
+
+.postPage :global(.rich-text-content p) {
+  margin: 1.15em 0;
+}
+
+.postPage :global(.rich-text-content ul),
+.postPage :global(.rich-text-content ol) {
+  padding-left: 1.35em;
+}
+
+.postPage :global(.rich-text-content li) {
+  margin: 0.45em 0;
+}
+
+.postPage :global(.rich-text-content h2) {
+  font-size: 1.7em;
+}
+
+.postPage :global(.rich-text-content h3) {
+  font-size: 1.35em;
+}
+
+.postPage :global(.rich-text-content blockquote) {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 2px solid var(--gold);
+  color: var(--plum);
+  font-style: italic;
+}
+
+.postPage :global(.article-cover) {
+  width: 100%;
+  height: auto;
+  margin-top: 30px;
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+.postPage :global(.comments-section) {
+  margin-top: 74px;
+  padding-top: 42px;
+  border-top: 1px solid var(--line);
+}
+
+.postPage :global(.comments-section h2) {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 2.3rem;
+  font-weight: 500;
+}
+
+.postPage :global(.comment-list) {
+  display: grid;
+  gap: 14px;
+  margin-top: 25px;
+}
+
+.postPage :global(.comment-item) {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.postPage :global(.comment-item > div) {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.postPage :global(.comment-item strong) {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.postPage :global(.comment-item time) {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.postPage :global(.comment-item p) {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.postPage :global(.comment-empty) {
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.postPage :global(.comment-form) {
+  display: grid;
+  gap: 16px;
+  margin-top: 30px;
+  padding: 25px;
+  border-radius: 15px;
+  background: #f2ece5;
+}
+
+.postPage :global(.honeypot) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.postPage :global(.notice) {
+  margin: 24px 0 0;
+  padding: 16px 18px;
+  border-left: 2px solid var(--gold);
+  color: var(--ink-soft);
+  background: #f7f0e2;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}

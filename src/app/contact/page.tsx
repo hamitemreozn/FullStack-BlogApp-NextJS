@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
+import styles from "./contact.module.css";
+
 export const metadata: Metadata = {
   title: "Danışmanlık",
   description:
@@ -10,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="page-shell">
+    <main className={`${styles.contactPage} page-shell`}>
       <section className="contact-hero">
         <div>
           <p className="eyebrow">Danışmanlıklar</p>

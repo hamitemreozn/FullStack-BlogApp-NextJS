@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+import { AdminShell } from "./admin-shell";
 import { LogoutButton } from "./logout-button";
 import { ContentForms } from "./content-forms";
 import { CommentModeration } from "./comment-moderation";
@@ -55,7 +56,7 @@ export default async function AdminPage() {
     .execute();
 
   return (
-    <main className="page-shell">
+    <AdminShell>
       <section className="admin-card">
         <p className="eyebrow">Yönetim</p>
         <h1>Hoş geldin, {session.user.name}</h1>
@@ -92,6 +93,6 @@ export default async function AdminPage() {
           }))}
         />
       </section>
-    </main>
+    </AdminShell>
   );
 }

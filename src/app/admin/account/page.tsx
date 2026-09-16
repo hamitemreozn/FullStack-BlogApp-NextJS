@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { AdminShell } from "../admin-shell";
 import { PasswordForm } from "../password-form";
 import { auth } from "@/lib/auth";
 
@@ -9,7 +10,7 @@ export default async function AccountPage() {
   if (!session || session.user.role !== "admin") redirect("/admin/login");
 
   return (
-    <main className="page-shell">
+    <AdminShell>
       <section className="admin-card">
         <p className="eyebrow">Hesap güvenliği</p>
         <h1>Parolanızı güncelleyin</h1>
@@ -19,6 +20,6 @@ export default async function AccountPage() {
         </p>
         <PasswordForm />
       </section>
-    </main>
+    </AdminShell>
   );
 }

@@ -1,0 +1,416 @@
+.adminPage :global(.admin-card) {
+  width: min(820px, 100%);
+  margin: 35px auto 0;
+  padding: clamp(28px, 5vw, 52px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--paper);
+  box-shadow: 0 18px 45px rgba(41, 29, 53, 0.08);
+}
+
+.adminPage :global(.admin-card h1) {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.adminPage :global(.admin-card .form-stack) {
+  margin-top: 26px;
+}
+
+.adminPage :global(.admin-utility-links) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 24px 0 30px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.adminPage :global(.admin-utility-links > a) {
+  border: 0;
+  padding: 0;
+  color: var(--plum);
+  background: none;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.adminPage :global(.admin-utility-links .primary-button) {
+  min-height: 40px;
+  padding-inline: 15px;
+}
+
+.adminPage :global(.content-manager) {
+  display: grid;
+  gap: 32px;
+}
+
+.adminPage :global(.content-manager-section),
+.adminPage :global(.content-editor),
+.adminPage :global(.category-form) {
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(246, 242, 237, 0.52);
+}
+
+.adminPage :global(.manager-heading) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.adminPage :global(.manager-heading .eyebrow) {
+  margin-bottom: 8px;
+}
+
+.adminPage :global(.manager-heading h2) {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.adminPage :global(.post-manager-list) {
+  display: grid;
+  gap: 9px;
+  margin-top: 21px;
+}
+
+.adminPage :global(.post-manager-item) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px;
+  border: 1px solid rgba(73, 55, 92, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.adminPage :global(.post-manager-item h3) {
+  margin: 7px 0 3px;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 1.17rem;
+  font-weight: 500;
+}
+
+.adminPage :global(.post-manager-item p),
+.adminPage :global(.field-hint) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.73rem;
+}
+
+.adminPage :global(.status-badge) {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.adminPage :global(.is-published) {
+  color: #1d684e;
+  background: #e2f4e9;
+}
+
+.adminPage :global(.is-draft) {
+  color: #6a5b71;
+  background: #eee9f2;
+}
+
+.adminPage :global(.item-actions) {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 13px;
+}
+
+.adminPage :global(.danger-action) {
+  border: 0;
+  padding: 0;
+  color: #a12a38;
+  background: none;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.adminPage :global(.danger-action:disabled) {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.adminPage :global(.manager-empty) {
+  margin: 0;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 0.83rem;
+  text-align: center;
+}
+
+.adminPage :global(.moderation-section) {
+  margin-top: 32px;
+}
+
+.adminPage :global(.moderation-list) {
+  display: grid;
+  gap: 10px;
+  margin-top: 21px;
+}
+
+.adminPage :global(.moderation-item) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 17px;
+  border: 1px solid rgba(73, 55, 92, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.adminPage :global(.moderation-item p) {
+  margin: 0 0 4px;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.adminPage :global(.moderation-item time) {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.adminPage :global(.moderation-item blockquote) {
+  margin: 13px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.adminPage :global(.content-editor),
+.adminPage :global(.category-form) {
+  margin-top: 0 !important;
+}
+
+.adminPage :global(.content-editor .manager-heading),
+.adminPage :global(.category-form .manager-heading) {
+  margin-bottom: 7px;
+}
+
+.adminPage :global(.checkbox-field) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.adminPage :global(.form-stack h2) {
+  margin: 22px 0 0;
+  font-family: var(--serif);
+  font-size: 1.55rem;
+  font-weight: 500;
+}
+
+.adminPage :global(.visually-hidden-file-input) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.adminPage :global(.file-picker) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  border: 1px dashed rgba(73, 55, 92, 0.28);
+  border-radius: 10px;
+  padding: 8px;
+  color: var(--muted);
+  background: #fffdf9;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.adminPage :global(.file-picker:hover),
+.adminPage :global(.visually-hidden-file-input:focus-visible + .file-picker) {
+  border-color: var(--plum);
+  background: #f5eff8;
+}
+
+.adminPage :global(.file-picker-button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 7px;
+  padding: 0 11px;
+  color: var(--paper);
+  background: var(--plum);
+  font-size: 0.73rem;
+  font-weight: 750;
+}
+
+.adminPage :global(.file-picker-name) {
+  overflow: hidden;
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminPage :global(.cover-preview) {
+  width: min(100%, 420px);
+  height: 210px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background-position: center;
+  background-size: cover;
+}
+
+.adminPage :global(.rich-text-editor) {
+  overflow: hidden;
+  border: 1px solid rgba(73, 55, 92, 0.2);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.adminPage :global(.rich-text-loading) {
+  padding: 15px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.adminPage :global(.editor-toolbar) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 9px;
+  border-bottom: 1px solid rgba(73, 55, 92, 0.14);
+  background: #f6f1ea;
+}
+
+.adminPage :global(.editor-toolbar button) {
+  min-height: 30px;
+  border: 1px solid rgba(73, 55, 92, 0.2);
+  border-radius: 6px;
+  padding: 0 8px;
+  color: var(--ink-soft);
+  background: #fffdf9;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.adminPage :global(.editor-toolbar button:hover) {
+  border-color: var(--plum);
+  background: #eee7f4;
+}
+
+.adminPage :global(.editor-toolbar button.is-active) {
+  border-color: var(--plum);
+  color: #fffdfb;
+  background: var(--plum);
+}
+
+.adminPage :global(.rich-text-input) {
+  min-height: 270px;
+  outline: none;
+  padding: 16px;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 1.03rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.adminPage :global(.rich-text-input > :first-child) {
+  margin-top: 0;
+}
+
+.adminPage :global(.rich-text-input > :last-child) {
+  margin-bottom: 0;
+}
+
+.adminPage :global(.rich-text-input h2) {
+  margin: 1.45em 0 0.5em;
+  font-family: var(--serif);
+  font-size: 1.7em;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.adminPage :global(.rich-text-input h3) {
+  margin: 1.3em 0 0.45em;
+  font-family: var(--serif);
+  font-size: 1.35em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.adminPage :global(.rich-text-input p) {
+  margin: 0.8em 0;
+}
+
+.adminPage :global(.rich-text-input ul),
+.adminPage :global(.rich-text-input ol) {
+  margin: 0.8em 0;
+  padding-left: 1.4em;
+}
+
+.adminPage :global(.rich-text-input blockquote) {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 2px solid var(--gold);
+  color: var(--plum);
+  font-style: italic;
+}
+
+.adminPage :global(.editor-hint) {
+  margin: 0;
+  padding: 0 16px 13px;
+  color: var(--muted);
+  background: #fff;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.adminPage :global(.notice) {
+  margin: 24px 0 0;
+  padding: 16px 18px;
+  border-left: 2px solid var(--gold);
+  color: var(--ink-soft);
+  background: #f7f0e2;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.adminPage :global(.form-error) {
+  margin: 0;
+  color: #a62b2b;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 820px) {
+  .adminPage :global(.post-manager-item),
+  .adminPage :global(.moderation-item) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

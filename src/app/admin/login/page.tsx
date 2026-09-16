@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { AdminShell } from "../admin-shell";
 import { LoginForm } from "./login-form";
 import { auth } from "@/lib/auth";
 
@@ -9,8 +10,8 @@ export default async function AdminLoginPage() {
   if (session?.user.role === "admin") redirect("/admin");
 
   return (
-    <main className="page-shell">
+    <AdminShell>
       <LoginForm />
-    </main>
+    </AdminShell>
   );
 }
