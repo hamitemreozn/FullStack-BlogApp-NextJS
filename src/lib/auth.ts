@@ -27,6 +27,17 @@ export const auth = betterAuth({
     minPasswordLength: 12,
     maxPasswordLength: 128,
   },
+  rateLimit: {
+    // Better Auth only enables this in production by default. Keeping it on
+    // locally lets us exercise the same protection before deployment.
+    enabled: true,
+    window: 60,
+    max: 60,
+    customRules: {
+      "/sign-in/email": { window: 60, max: 5 },
+      "/change-password": { window: 60, max: 5 },
+    },
+  },
   advanced: {
     // Cookies do not distinguish localhost ports. A project-specific prefix
     // keeps this admin session separate from other local Better Auth projects.
