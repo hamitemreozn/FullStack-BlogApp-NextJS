@@ -68,6 +68,20 @@ export function JournalFilters({
   );
 
   useEffect(() => {
+    function syncFiltersFromHistory() {
+      cancelPendingSearch();
+      const parameters = new URLSearchParams(window.location.search);
+      setQuery(parameters.get("q") ?? "");
+      setCategory(parameters.get("category") ?? "");
+    }
+
+    window.addEventListener("popstate", syncFiltersFromHistory);
+    return () => {
+      window.removeEventListener("popstate", syncFiltersFromHistory);
+    };
+  }, [cancelPendingSearch]);
+
+  useEffect(() => {
     if (query === initialQuery && category === initialCategory) {
       return;
     }

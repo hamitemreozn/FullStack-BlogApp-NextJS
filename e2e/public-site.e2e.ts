@@ -49,13 +49,23 @@ test("typing filters the journal without moving the reader", async ({
     () => window.scrollY,
   );
 
-  await page.getByLabel("Yazılarda ara").fill("Gece");
+  const searchInput = page.getByLabel("Yazılarda ara");
+  await searchInput.fill("Se");
 
-  await expect(page).toHaveURL(/\?q=Gece$/);
+  await expect(page).toHaveURL(/\?q=Se$/);
+  await expect(searchInput).toBeFocused();
+
+  await searchInput.pressSequentially("v");
+
+  await expect(searchInput).toHaveValue("Sev");
+  await expect(page).toHaveURL(/\?q=Sev$/);
+  await expect(searchInput).toBeFocused();
   await expect
     .poll(() => page.evaluate(() => window.scrollY))
     .toBeGreaterThan(scrollPositionBeforeFiltering - 20);
-  await expect(page.getByRole("link", { name: /Gece Venüs/i })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Sevgi dillerini fark etmek/i }),
+  ).toBeVisible();
 });
 
 test("journal cards keep a consistent cover and text grid", async ({

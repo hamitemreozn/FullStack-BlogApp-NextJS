@@ -121,7 +121,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           categories={categories}
           initialCategory={category}
           initialQuery={query}
-          key={`${query}:${category}`}
         />
         {posts.length ? (
           <>
