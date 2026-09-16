@@ -38,7 +38,9 @@ test("published post cover, consultation page and admin redirect work", async ({
   ).toBeVisible();
 });
 
-test("filtering keeps the reader at the journal section", async ({ page }) => {
+test("typing filters the journal without moving the reader", async ({
+  page,
+}) => {
   await page.goto("/");
 
   const filters = page.locator(".journal-filters");
@@ -48,7 +50,6 @@ test("filtering keeps the reader at the journal section", async ({ page }) => {
   );
 
   await page.getByLabel("Yazılarda ara").fill("Gece");
-  await page.getByRole("button", { name: "Filtrele" }).click();
 
   await expect(page).toHaveURL(/\?q=Gece$/);
   await expect

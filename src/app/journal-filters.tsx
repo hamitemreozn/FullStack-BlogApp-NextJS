@@ -1,6 +1,13 @@
 "use client";
 
-import { FormEvent, useState, useTransition } from "react";
+import {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 type Category = {
@@ -35,34 +42,69 @@ export function JournalFilters({
   const [isPending, startTransition] = useTransition();
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState(initialCategory);
+  const debounceTimer = useRef<number | undefined>(undefined);
 
-  function navigate(nextQuery: string, nextCategory: string) {
-    startTransition(() => {
-      router.push(createFilterHref(pathname, nextQuery, nextCategory), {
-        scroll: false,
+  const cancelPendingSearch = useCallback(() => {
+    if (debounceTimer.current !== undefined) {
+      window.clearTimeout(debounceTimer.current);
+      debounceTimer.current = undefined;
+    }
+  }, []);
+
+  const navigate = useCallback(
+    (
+      nextQuery: string,
+      nextCategory: string,
+      navigation: "push" | "replace",
+    ) => {
+      cancelPendingSearch();
+      const href = createFilterHref(pathname, nextQuery, nextCategory);
+
+      startTransition(() => {
+        router[navigation](href, { scroll: false });
       });
-    });
-  }
+    },
+    [cancelPendingSearch, pathname, router],
+  );
+
+  useEffect(() => {
+    if (query === initialQuery && category === initialCategory) {
+      return;
+    }
+
+    debounceTimer.current = window.setTimeout(() => {
+      debounceTimer.current = undefined;
+      navigate(query, category, "replace");
+    }, 300);
+
+    return cancelPendingSearch;
+  }, [
+    cancelPendingSearch,
+    category,
+    initialCategory,
+    initialQuery,
+    navigate,
+    query,
+  ]);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    navigate(query, category);
+    navigate(query, category, "push");
   }
 
   function clear() {
     setQuery("");
     setCategory("");
-    navigate("", "");
+    navigate("", "", "replace");
   }
 
   const hasFilters = Boolean(query.trim() || category);
 
   return (
-    <form className="journal-filters" onSubmit={submit}>
+    <form aria-busy={isPending} className="journal-filters" onSubmit={submit}>
       <label>
         <span>Yazılarda ara</span>
         <input
-          disabled={isPending}
           name="q"
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Örn. Venüs"
@@ -72,7 +114,6 @@ export function JournalFilters({
       <label>
         <span>Kategori</span>
         <select
-          disabled={isPending}
           name="category"
           onChange={(event) => setCategory(event.target.value)}
           value={category}
