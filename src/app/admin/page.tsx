@@ -6,6 +6,7 @@ import { AdminShell } from "./admin-shell";
 import { LogoutButton } from "./logout-button";
 import { ContentForms } from "./content-forms";
 import { CommentModeration } from "./comment-moderation";
+import { MediaAudit } from "./media-audit";
 import { auth } from "@/lib/auth";
 import { database } from "@/lib/database";
 
@@ -83,6 +84,7 @@ export default async function AdminPage() {
             updatedAt: post.updated_at.toISOString(),
           }))}
         />
+        <MediaAudit />
         <CommentModeration
           comments={pendingComments.map((comment) => ({
             id: comment.id,

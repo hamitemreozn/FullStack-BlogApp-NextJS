@@ -4,18 +4,25 @@ import {
   DeleteObjectCommand,
   GetObjectCommand,
   HeadObjectCommand,
+  ListObjectsV2Command,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { env } from "@/lib/env";
+import type { StoredImageSummary } from "@/lib/media-audit";
 import {
   hasExpectedImageSignature,
   type AllowedImageContentType,
 } from "@/lib/image-validation";
 
 export const maxImageSizeBytes = 5 * 1024 * 1024;
+
+export {
+  findUnreferencedImages,
+  type StoredImageSummary,
+} from "@/lib/media-audit";
 
 const imageExtensions = {
   "image/jpeg": "jpg",
@@ -109,4 +116,33 @@ export async function discardImage(key: string) {
   await storage.send(
     new DeleteObjectCommand({ Bucket: env.S3_BUCKET, Key: key }),
   );
+}
+
+export async function listImagesForUser(userId: string) {
+  const images: StoredImageSummary[] = [];
+  const prefix = `posts/${userId}/`;
+  let continuationToken: string | undefined;
+
+  do {
+    const page = await storage.send(
+      new ListObjectsV2Command({
+        Bucket: env.S3_BUCKET,
+        Prefix: prefix,
+        ContinuationToken: continuationToken,
+      }),
+    );
+    for (const object of page.Contents ?? []) {
+      if (!object.Key || object.Size === undefined) continue;
+      images.push({
+        key: object.Key,
+        lastModified: object.LastModified ?? null,
+        size: object.Size,
+      });
+    }
+    continuationToken = page.IsTruncated
+      ? page.NextContinuationToken
+      : undefined;
+  } while (continuationToken);
+
+  return images;
 }

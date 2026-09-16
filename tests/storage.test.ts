@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { hasExpectedImageSignature } from "../src/lib/image-validation";
+import { findUnreferencedImages } from "../src/lib/media-audit";
 
 describe("uploaded image validation", () => {
   it("accepts only the expected binary signature for each supported image type", () => {
@@ -34,5 +35,16 @@ describe("uploaded image validation", () => {
         new TextEncoder().encode("<script>alert('not an image')</script>"),
       ),
     ).toBe(false);
+  });
+
+  it("reports only objects that are not linked to a post", () => {
+    const images = [
+      { key: "posts/admin/linked.jpg", lastModified: null, size: 10 },
+      { key: "posts/admin/orphan.webp", lastModified: null, size: 20 },
+    ];
+
+    expect(findUnreferencedImages(images, ["posts/admin/linked.jpg"])).toEqual([
+      images[1],
+    ]);
   });
 });
