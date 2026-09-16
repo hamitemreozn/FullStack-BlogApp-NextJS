@@ -132,21 +132,32 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   href={`/posts/${post.slug}`}
                   key={post.slug}
                 >
-                  {post.cover_image_key ? (
-                    <Image
-                      className="post-cover"
-                      src={`/api/media/${post.cover_image_key}`}
-                      alt=""
-                      width={640}
-                      height={360}
-                      unoptimized
-                    />
-                  ) : null}
-                  <span className="meta">
-                    {post.category_title ?? "Astroloji"}
-                  </span>
-                  <h3>{post.title}</h3>
-                  <p>{post.excerpt}</p>
+                  <div className="post-cover-frame">
+                    {post.cover_image_key ? (
+                      <Image
+                        className="post-cover"
+                        src={`/api/media/${post.cover_image_key}`}
+                        alt=""
+                        width={640}
+                        height={360}
+                        unoptimized
+                      />
+                    ) : (
+                      <span
+                        className="post-cover-placeholder"
+                        aria-hidden="true"
+                      >
+                        ✦
+                      </span>
+                    )}
+                  </div>
+                  <div className="post-card-copy">
+                    <span className="meta">
+                      {post.category_title ?? "Astroloji"}
+                    </span>
+                    <h3>{post.title}</h3>
+                    <p>{post.excerpt}</p>
+                  </div>
                 </Link>
               ))}
             </div>

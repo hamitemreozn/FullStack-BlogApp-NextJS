@@ -121,4 +121,25 @@ describe("content security", () => {
       postInputSchema.safeParse({ ...basePost, publishedAt: "yarın" }).success,
     ).toBe(false);
   });
+
+  it("limits card titles to a concise editorial length", () => {
+    const basePost = {
+      title: "Kısa ve dengeli bir kart başlığı",
+      slug: "kart-basligi",
+      excerpt: "",
+      content: createDocument("Güvenli içerik"),
+      categoryId: null,
+      coverImageKey: null,
+      publish: false,
+      publishedAt: null,
+    };
+
+    expect(postInputSchema.safeParse(basePost).success).toBe(true);
+    expect(
+      postInputSchema.safeParse({
+        ...basePost,
+        title: "Bir iki üç dört beş altı yedi sekiz dokuz",
+      }).success,
+    ).toBe(false);
+  });
 });

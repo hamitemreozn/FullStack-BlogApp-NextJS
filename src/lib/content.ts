@@ -8,7 +8,14 @@ export const categoryInputSchema = z.object({
 });
 
 export const postInputSchema = z.object({
-  title: z.string().trim().min(1).max(200),
+  title: z
+    .string()
+    .trim()
+    .min(1)
+    .max(80)
+    .refine((value) => value.split(/\s+/).length <= 8, {
+      message: "Başlık en fazla 8 kelime olabilir.",
+    }),
   slug: z.string().trim().regex(slugPattern).max(200),
   excerpt: z.string().trim().max(500),
   content: z.unknown(),

@@ -307,8 +307,9 @@ export function ContentForms({
           <input
             name="title"
             required
-            maxLength={200}
+            maxLength={80}
             defaultValue={editingPost?.title}
+            title="Başlık en fazla 8 kelime ve 80 karakter olabilir."
           />
         </label>
         <label className="field">

@@ -56,3 +56,35 @@ test("filtering keeps the reader at the journal section", async ({ page }) => {
     .toBeGreaterThan(scrollPositionBeforeFiltering - 20);
   await expect(page.getByRole("link", { name: /Gece Venüs/i })).toBeVisible();
 });
+
+test("journal cards keep a consistent cover and text grid", async ({
+  page,
+}) => {
+  await page.goto("/#yazilar");
+
+  const cards = page.locator(".post-card");
+  await expect(cards).toHaveCount(9);
+  await expect(cards.first().locator(".post-cover")).toBeVisible();
+
+  const measurements = await cards.evaluateAll((items) =>
+    items.map((card) => {
+      const cardBox = card.getBoundingClientRect();
+      const coverBox = card
+        .querySelector(".post-cover-frame")!
+        .getBoundingClientRect();
+      const titleBox = card.querySelector("h3")!.getBoundingClientRect();
+      return {
+        cardHeight: cardBox.height,
+        coverHeight: coverBox.height,
+        coverOffset: coverBox.top - cardBox.top,
+        titleHeight: titleBox.height,
+      };
+    }),
+  );
+
+  expect(new Set(measurements.map((item) => item.cardHeight)).size).toBe(1);
+  expect(new Set(measurements.map((item) => item.coverHeight)).size).toBe(1);
+  expect(new Set(measurements.map((item) => item.coverOffset)).size).toBe(1);
+  expect(measurements[0]?.coverOffset).toBeCloseTo(1);
+  expect(new Set(measurements.map((item) => item.titleHeight)).size).toBe(1);
+});
