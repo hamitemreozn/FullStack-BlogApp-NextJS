@@ -16,6 +16,7 @@
     "format:write": "prettier --write .",
     "db:migrate:content": "tsx --env-file=.env scripts/migrate-content.ts",
     "db:seed:demo": "tsx --env-file=.env scripts/seed-demo-posts.ts",
+    "db:refresh-demo-covers": "tsx --env-file=.env scripts/refresh-demo-covers.ts",
     "storage:setup": "tsx --env-file=.env scripts/setup-storage.ts",
     "audit:prod": "npm audit --omit=dev"
   },
