@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "db:migrate:content": "tsx --env-file=.env scripts/migrate-content.ts",
@@ -34,6 +35,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/node": "^24.0.0",
     "@types/pg": "^8.0.0",
     "@types/react": "^19.0.0",
