@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import styles from "./home.module.css";
 import { database } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
@@ -69,7 +70,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   };
 
   return (
-    <main className="page-shell">
+    <main className={`${styles.homePage} page-shell`}>
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Kişisel astroloji danışmanlığı</p>
