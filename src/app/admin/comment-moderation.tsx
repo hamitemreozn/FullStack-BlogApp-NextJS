@@ -32,7 +32,9 @@ export function CommentModeration({
       });
       if (!response.ok) throw new Error("Yorum güncellenemedi.");
       setMessage(
-        status === "APPROVED" ? "Yorum yayınlandı." : "Yorum reddedildi.",
+        status === "APPROVED"
+          ? "Yorum yayınlandı."
+          : "Yorum yayından kaldırıldı.",
       );
       router.refresh();
     } catch (error) {
@@ -104,28 +106,26 @@ export function CommentModeration({
                     Onayla
                   </button>
                 ) : null}
-                <button
-                  className="danger-action"
-                  type="button"
-                  disabled={processingId === comment.id}
-                  onClick={() =>
-                    comment.status === "REJECTED"
-                      ? remove(comment.id)
-                      : moderate(comment.id, "REJECTED")
-                  }
-                >
-                  {comment.status === "REJECTED" ? "Sil" : "Reddet"}
-                </button>
                 {comment.status !== "REJECTED" ? (
                   <button
                     className="danger-action"
                     type="button"
                     disabled={processingId === comment.id}
-                    onClick={() => remove(comment.id)}
+                    onClick={() => moderate(comment.id, "REJECTED")}
                   >
-                    Sil
+                    {comment.status === "APPROVED"
+                      ? "Yayından kaldır"
+                      : "Reddet"}
                   </button>
                 ) : null}
+                <button
+                  className="danger-action"
+                  type="button"
+                  disabled={processingId === comment.id}
+                  onClick={() => remove(comment.id)}
+                >
+                  Sil
+                </button>
               </div>
             </article>
           ))}

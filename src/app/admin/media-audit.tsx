@@ -18,6 +18,7 @@ export function MediaAudit() {
   const [images, setImages] = useState<UnreferencedImage[] | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [deletingKey, setDeletingKey] = useState<string | null>(null);
 
   async function scan() {
     setIsScanning(true);
@@ -38,6 +39,32 @@ export function MediaAudit() {
       );
     } finally {
       setIsScanning(false);
+    }
+  }
+
+  async function remove(image: UnreferencedImage) {
+    if (!window.confirm("Bu sahipsiz görsel kalıcı olarak silinsin mi?"))
+      return;
+    setDeletingKey(image.key);
+    setMessage(null);
+    try {
+      const response = await fetch(`/api/admin/uploads/${image.key}`, {
+        method: "DELETE",
+      });
+      const payload = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
+      if (!response.ok)
+        throw new Error(payload?.message ?? "Görsel silinemedi.");
+      setImages(
+        (current) =>
+          current?.filter((candidate) => candidate.key !== image.key) ?? null,
+      );
+      setMessage("Sahipsiz görsel silindi.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Görsel silinemedi.");
+    } finally {
+      setDeletingKey(null);
     }
   }
 
@@ -84,6 +111,14 @@ export function MediaAudit() {
                     ? ` · ${new Date(image.lastModified).toLocaleDateString("tr-TR")}`
                     : ""}
                 </span>
+                <button
+                  className="danger-action"
+                  disabled={deletingKey === image.key}
+                  onClick={() => remove(image)}
+                  type="button"
+                >
+                  {deletingKey === image.key ? "Siliniyor…" : "Görseli sil"}
+                </button>
               </li>
             ))}
           </ul>

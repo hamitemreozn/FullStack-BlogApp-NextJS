@@ -17,12 +17,7 @@ test("published post cover, consultation page and admin redirect work", async ({
     /\/api\/media\//,
   );
 
-  const coverResponse = page.waitForResponse(
-    (response) =>
-      response.url().includes("/api/media/") && response.status() === 200,
-  );
   await page.goto("/posts/gece-venus");
-  await coverResponse;
   const cover = page.locator(".article-cover");
   await expect(cover).toBeVisible();
   expect(await cover.evaluate((image) => image.naturalWidth)).toBeGreaterThan(
