@@ -9,7 +9,7 @@ export function LogoutButton() {
 
   return (
     <button
-      className="primary-button"
+      className="secondary-button"
       onClick={async () => {
         await authClient.signOut();
         router.replace("/");

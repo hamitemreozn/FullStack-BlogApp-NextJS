@@ -1,5 +1,5 @@
 .adminPage :global(.admin-card) {
-  width: min(820px, 100%);
+  width: min(1040px, 100%);
   margin: 35px auto 0;
   padding: clamp(28px, 5vw, 52px);
   border: 1px solid var(--line);
@@ -43,6 +43,18 @@
 .adminPage :global(.admin-utility-links .primary-button) {
   min-height: 40px;
   padding-inline: 15px;
+}
+
+.adminPage :global(.form-stack .primary-button),
+.adminPage :global(.category-form .secondary-button) {
+  width: 100%;
+  min-height: 48px;
+}
+
+.adminPage :global(.form-stack .primary-button) {
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 .adminPage :global(.content-manager) {
@@ -138,12 +150,26 @@
 }
 
 .adminPage :global(.danger-action) {
-  border: 0;
-  padding: 0;
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(161, 42, 56, 0.2);
+  border-radius: 999px;
+  padding: 0 12px;
   color: #a12a38;
-  background: none;
-  font-size: 0.8rem;
-  font-weight: 750;
+  background: rgba(161, 42, 56, 0.06);
+  font-size: 0.72rem;
+  font-weight: 800;
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.adminPage :global(.danger-action:hover:not(:disabled)) {
+  border-color: #a12a38;
+  background: rgba(161, 42, 56, 0.12);
 }
 
 .adminPage :global(.danger-action:disabled) {
@@ -244,6 +270,10 @@
 .adminPage :global(.content-editor),
 .adminPage :global(.category-form) {
   margin-top: 0 !important;
+}
+
+.adminPage :global(.content-editor) {
+  padding: clamp(26px, 4vw, 38px);
 }
 
 .adminPage :global(.content-editor .manager-heading),
