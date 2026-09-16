@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 type UnreferencedImage = {
@@ -69,6 +70,13 @@ export function MediaAudit() {
           <ul className="media-audit-list">
             {images.map((image) => (
               <li key={image.key}>
+                <Image
+                  alt="Sahipsiz görsel önizlemesi"
+                  src={`/api/admin/uploads/${image.key}`}
+                  width={280}
+                  height={158}
+                  unoptimized
+                />
                 <code>{image.key}</code>
                 <span>
                   {formatBytes(image.size)}

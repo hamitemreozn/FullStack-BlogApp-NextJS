@@ -41,18 +41,18 @@ export default async function AdminPage() {
     .orderBy("updated_at", "desc")
     .limit(50)
     .execute();
-  const pendingComments = await database
+  const comments = await database
     .selectFrom("comments")
     .innerJoin("posts", "posts.id", "comments.post_id")
     .select([
       "comments.id",
       "comments.author_name",
       "comments.body",
+      "comments.status",
       "comments.created_at",
       "posts.title as post_title",
     ])
-    .where("comments.status", "=", "PENDING")
-    .orderBy("comments.created_at", "asc")
+    .orderBy("comments.created_at", "desc")
     .limit(50)
     .execute();
 
@@ -86,10 +86,11 @@ export default async function AdminPage() {
         />
         <MediaAudit />
         <CommentModeration
-          comments={pendingComments.map((comment) => ({
+          comments={comments.map((comment) => ({
             id: comment.id,
             authorName: comment.author_name,
             body: comment.body,
+            status: comment.status,
             postTitle: comment.post_title,
             createdAt: comment.created_at.toISOString(),
           }))}

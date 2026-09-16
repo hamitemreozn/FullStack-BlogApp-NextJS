@@ -40,3 +40,33 @@ export async function PATCH(request: Request, context: CommentRouteContext) {
 
   return Response.json({ id: updated.id, status: moderation.data.status });
 }
+
+export async function DELETE(request: Request, context: CommentRouteContext) {
+  if (!hasTrustedOrigin(request))
+    return Response.json(
+      { message: "Geçersiz istek kaynağı." },
+      { status: 403 },
+    );
+  if (!(await requireAdmin(request.headers)))
+    return Response.json(
+      { message: "Yönetici yetkisi gerekli." },
+      { status: 401 },
+    );
+
+  const id = commentIdSchema.safeParse((await context.params).id);
+  if (!id.success)
+    return Response.json(
+      { message: "Geçersiz yorum kimliği." },
+      { status: 400 },
+    );
+
+  const deleted = await database
+    .deleteFrom("comments")
+    .where("id", "=", id.data)
+    .returning("id")
+    .executeTakeFirst();
+  if (!deleted)
+    return Response.json({ message: "Yorum bulunamadı." }, { status: 404 });
+
+  return new Response(null, { status: 204 });
+}

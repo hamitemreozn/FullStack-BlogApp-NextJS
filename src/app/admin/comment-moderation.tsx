@@ -3,18 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type PendingComment = {
+type ManagedComment = {
   id: string;
   authorName: string;
   body: string;
   postTitle: string;
   createdAt: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
 };
 
 export function CommentModeration({
   comments,
 }: {
-  comments: PendingComment[];
+  comments: ManagedComment[];
 }) {
   const router = useRouter();
   const [message, setMessage] = useState<string | null>(null);
@@ -43,12 +44,30 @@ export function CommentModeration({
     }
   }
 
+  async function remove(id: string) {
+    if (!window.confirm("Bu yorum kalıcı olarak silinsin mi?")) return;
+    setProcessingId(id);
+    setMessage(null);
+    try {
+      const response = await fetch(`/api/admin/comments/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Yorum silinemedi.");
+      setMessage("Yorum silindi.");
+      router.refresh();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Yorum silinemedi.");
+    } finally {
+      setProcessingId(null);
+    }
+  }
+
   return (
     <section className="content-manager-section moderation-section">
       <div className="manager-heading">
         <div>
           <p className="eyebrow">Moderasyon</p>
-          <h2>Bekleyen yorumlar</h2>
+          <h2>Yorumlar</h2>
         </div>
         <span className="status-badge is-draft">{comments.length}</span>
       </div>
@@ -60,34 +79,59 @@ export function CommentModeration({
                 <p>
                   <strong>{comment.authorName}</strong> · {comment.postTitle}
                 </p>
+                <span
+                  className={`status-badge ${comment.status === "APPROVED" ? "is-published" : "is-draft"}`}
+                >
+                  {comment.status === "APPROVED"
+                    ? "Yayında"
+                    : comment.status === "REJECTED"
+                      ? "Reddedildi"
+                      : "Bekliyor"}
+                </span>
                 <time dateTime={comment.createdAt}>
                   {new Date(comment.createdAt).toLocaleString("tr-TR")}
                 </time>
                 <blockquote>{comment.body}</blockquote>
               </div>
               <div className="item-actions">
-                <button
-                  className="text-action"
-                  type="button"
-                  disabled={processingId === comment.id}
-                  onClick={() => moderate(comment.id, "APPROVED")}
-                >
-                  Onayla
-                </button>
+                {comment.status !== "APPROVED" ? (
+                  <button
+                    className="text-action"
+                    type="button"
+                    disabled={processingId === comment.id}
+                    onClick={() => moderate(comment.id, "APPROVED")}
+                  >
+                    Onayla
+                  </button>
+                ) : null}
                 <button
                   className="danger-action"
                   type="button"
                   disabled={processingId === comment.id}
-                  onClick={() => moderate(comment.id, "REJECTED")}
+                  onClick={() =>
+                    comment.status === "REJECTED"
+                      ? remove(comment.id)
+                      : moderate(comment.id, "REJECTED")
+                  }
                 >
-                  Reddet
+                  {comment.status === "REJECTED" ? "Sil" : "Reddet"}
                 </button>
+                {comment.status !== "REJECTED" ? (
+                  <button
+                    className="danger-action"
+                    type="button"
+                    disabled={processingId === comment.id}
+                    onClick={() => remove(comment.id)}
+                  >
+                    Sil
+                  </button>
+                ) : null}
               </div>
             </article>
           ))}
         </div>
       ) : (
-        <p className="manager-empty">Onay bekleyen yorum yok.</p>
+        <p className="manager-empty">Yorum bulunamadı.</p>
       )}
       {message ? (
         <p className="notice" role="status">

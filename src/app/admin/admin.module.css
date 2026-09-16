@@ -182,6 +182,14 @@
   background: rgba(255, 255, 255, 0.74);
 }
 
+.adminPage :global(.media-audit-list img) {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 .adminPage :global(.media-audit-list code) {
   overflow-wrap: anywhere;
   color: var(--ink-soft);
